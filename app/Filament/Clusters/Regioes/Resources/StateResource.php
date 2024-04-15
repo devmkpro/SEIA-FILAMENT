@@ -51,7 +51,6 @@ class StateResource extends Resource
                 Tables\Columns\TextColumn::make('name')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('ibge_code')
-                    ->numeric()
                     ->sortable(),
             ])
             ->filters([

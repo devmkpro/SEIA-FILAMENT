@@ -21,12 +21,12 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        // Filament::serving(function () {
-        //     Filament::registerNavigationGroups([
-        //         NavigationGroup::make()
-        //             ->label('TESTE')
-        //             ->collapsed(),
-        //     ]);
-        // });
+        Filament::serving(function () {
+            Filament::registerNavigationGroups([
+                NavigationGroup::make()
+                    ->label('Administrativo')
+                    ->collapsed(),
+            ]);
+        });
     }
 }
