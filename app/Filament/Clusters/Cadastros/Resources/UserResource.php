@@ -60,9 +60,9 @@ class UserResource extends Resource
                     ->required(fn (string $operation): bool => $operation === 'create')
                     ->maxLength(255),
 
-                Select::make('roles')
-                    ->options(fn () => \App\Models\Role::all()->pluck('role', 'name')->toArray())
+                Select::make('role_id')
                     ->relationship('roles', 'name')
+                    ->options(fn () => \App\Models\Role::all()->pluck('role', 'id')->toArray())
                     ->required()
                     ->searchable()
                     ->dehydrated(fn (?string $state) => filled($state))

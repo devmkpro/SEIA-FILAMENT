@@ -45,9 +45,7 @@ class SchoolResource extends Resource
                                 ])
                                 ->native(false)
                                 ->default('Ativa')
-                                ->label('Status')
-                                ->required(),
-
+                                ->label('Status'),
                             Select::make('type')
                                 ->options([
                                     'Municipal' => 'Municipal',
@@ -118,7 +116,7 @@ class SchoolResource extends Resource
                             ->dehydrated(fn (?string $state) => filled($state))
                             ->required(fn (string $operation): bool => $operation === 'create'),
 
-                        Forms\Components\Select::make('city')
+                        Forms\Components\Select::make('city_id')
                             ->options(function (callable $get) {
                                 $state = State::find($get('state'));
                                 return $state ? $state->cities->pluck('name', 'id') : ['' => 'Selecione um estado'];

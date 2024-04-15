@@ -27,6 +27,12 @@ class AppServiceProvider extends ServiceProvider
                     ->label('Administrativo')
                     ->collapsed(),
             ]);
+
+            Filament::registerNavigationGroups([
+                NavigationGroup::make()
+                    ->label('Secretaria')
+                    ->collapsed(),
+            ]);
         });
     }
 }

@@ -42,6 +42,7 @@ class UserSchoolResource extends Resource
                     ])
                     ->native(false)
                     ->default('Ativa'),
+
                 Select::make('role_id')
                     ->options(fn () => \App\Models\Role::all()->pluck('role', 'id')->toArray())
                     ->required()
