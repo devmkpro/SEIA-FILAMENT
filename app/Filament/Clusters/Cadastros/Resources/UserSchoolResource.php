@@ -4,7 +4,6 @@ namespace App\Filament\Clusters\Cadastros\Resources;
 
 use App\Filament\Clusters\Cadastros;
 use App\Filament\Clusters\Cadastros\Resources\UserSchoolResource\Pages;
-use App\Filament\Clusters\Cadastros\Resources\UserSchoolResource\RelationManagers;
 use App\Models\City;
 use App\Models\State;
 use App\Models\UserSchool;
@@ -15,9 +14,7 @@ use Filament\Pages\SubNavigationPosition;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class UserSchoolResource extends Resource
 {

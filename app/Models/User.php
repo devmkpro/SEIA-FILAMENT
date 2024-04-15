@@ -63,4 +63,40 @@ class User extends Authenticatable implements FilamentUser
             ->withPivot('role_id')
             ->withTimestamps();
     }
+
+    public function hasRoleForSchool($role, $schoolCode)
+    {
+        $role = Role::where('name', $role)->first();
+        return $this->schools()->where('code', $schoolCode)->wherePivot('role_id', $role->id)->exists();
+    }
+
+    public function hasPermissionForSchool(string $permission, string $schoolCode): bool
+    {
+        if ($this->hasRole('admin')) {
+            return true;
+        }
+
+        $school = School::where('code', $schoolCode)->first();
+        if (!$school || !$this->schools()->where('school_id', $school->id)->exists()) {
+            return false;
+        }
+
+        $roleID = $this->schools()->where('code', $schoolCode)->first()->pivot->role_id;
+        $role = Role::find($roleID);
+
+        if (!$this->hasRoleForSchool($role->name, $schoolCode)) {
+            return false;
+        }
+
+        return $this->hasPermission($permission, $role);
+    }
+
+    public function hasPermission(string $permission, Role $role): bool
+    {
+        $permissions = $role->permissions;
+        if ($permissions->contains('name', $permission) || $this->hasRole('admin')) {
+            return true;
+        }
+        return false;
+    }
 }
