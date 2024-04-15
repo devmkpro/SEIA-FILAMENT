@@ -8,6 +8,7 @@ use App\Filament\Clusters\Regioes\Resources\StateResource\RelationManagers;
 use App\Models\State;
 use Filament\Forms;
 use Filament\Forms\Form;
+use Filament\Notifications\Notification;
 use Filament\Pages\SubNavigationPosition;
 use Filament\Resources\Resource;
 use Filament\Tables;
@@ -58,7 +59,27 @@ class StateResource extends Resource
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
-                Tables\Actions\DeleteAction::make(),
+                Tables\Actions\DeleteAction::make()
+                    ->action(
+                        function ($data, $record) {
+                            if ($record->cities->count() > 0) {
+                                Notification::make()
+                                    ->danger()
+                                    ->title(__('Não é possível excluir'))
+                                    ->body(__('Existem cidades vinculadas'))
+                                    ->send();
+
+                                return;
+                            }
+
+                            $record->delete();
+
+                            Notification::make()
+                                ->success()
+                                ->title(__('Estado excluído'))
+                                ->send();
+                        }
+                    )
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([

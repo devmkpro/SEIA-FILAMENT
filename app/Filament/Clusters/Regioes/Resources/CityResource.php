@@ -9,6 +9,7 @@ use App\Models\City;
 use Filament\Forms;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Form;
+use Filament\Notifications\Notification;
 use Filament\Pages\SubNavigationPosition;
 use Filament\Resources\Resource;
 use Filament\Tables;
@@ -65,7 +66,27 @@ class CityResource extends Resource
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
-                Tables\Actions\DeleteAction::make(),
+                Tables\Actions\DeleteAction::make()
+                    ->action(
+                        function ($data, $record) {
+                            if ($record->schools->count() > 0) {
+                                Notification::make()
+                                    ->danger()
+                                    ->title(__('Não é possível excluir'))
+                                    ->body(__('Existem escolas vinculadas'))
+                                    ->send();
+
+                                return;
+                            }
+
+                            Notification::make()
+                                ->success()
+                                ->title(__('Cidade excluída'))
+                                ->send();
+
+                            $record->delete();
+                        }
+                    )
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
