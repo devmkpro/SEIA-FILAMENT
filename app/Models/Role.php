@@ -9,4 +9,13 @@ use Spatie\Permission\Models\Role as ModelsRole;
 class Role extends ModelsRole
 {
     use HasFactory;
+
+    public function getRoleAttribute()
+    {
+        return match ($this->name) {
+            'admin' => 'Administrador',
+            'secretary' => 'Secretaria',
+            default => $this->name,
+        };
+    }
 }

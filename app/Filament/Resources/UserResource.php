@@ -46,10 +46,16 @@ class UserResource extends Resource
                 Forms\Components\TextInput::make('password_confirmation')
                     ->password()
                     ->requiredWith('password')
-                    ->dehydrated(false)
+                    ->dehydrated(fn (?string $state) => filled($state))
+                    ->required(fn (string $operation): bool => $operation === 'create')
                     ->maxLength(255),
 
-                Select::make('roles')->multiple()->relationship('roles', 'name')
+                Select::make('roles')
+                    ->options(fn () => \App\Models\Role::all()->pluck('role', 'name')->toArray())
+                    ->required()
+                    ->searchable()
+                    ->dehydrated(fn (?string $state) => filled($state))
+                    ->placeholder(__('Selecione um papel')),
             ]);
     }
 

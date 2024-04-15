@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Filament\Resources\StateResource\Pages;
+namespace App\Filament\Clusters\Regioes\Resources\StateResource\Pages;
 
-use App\Filament\Resources\StateResource;
+use App\Filament\Clusters\Regioes\Resources\StateResource;
 use Filament\Actions;
 use Filament\Resources\Pages\ManageRecords;
 

@@ -14,7 +14,8 @@ class RolesAndPermissionsSeeder extends Seeder
      */
     public function run(): void
     {
-        $role = Role::createOrFirst(['name' => 'admin', 'guard_name' => 'web']);
+        $admin = Role::createOrFirst(['name' => 'admin', 'guard_name' => 'web']);
+        $secretary = Role::createOrFirst(['name' => 'secretary', 'guard_name' => 'web']);
 
         $array = [
             'view-any User',
@@ -61,6 +62,7 @@ class RolesAndPermissionsSeeder extends Seeder
             Permission::createOrFirst(['name' => $permission, 'guard_name' => 'web']);
         }
 
-        $role->givePermissionTo(Permission::all());
+        $admin->revokePermissionTo(Permission::all());
+        $admin->givePermissionTo(Permission::all());
     }
 }

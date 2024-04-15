@@ -1,29 +1,35 @@
 <?php
 
-namespace App\Filament\Resources;
+namespace App\Filament\Clusters\Regioes\Resources;
 
-use App\Filament\Resources\StateResource\Pages;
-use App\Filament\Resources\StateResource\RelationManagers;
-use App\Models\State;
+use App\Filament\Clusters\Regioes;
+use App\Filament\Clusters\Regioes\Resources\CityResource\Pages;
+use App\Filament\Clusters\Regioes\Resources\CityResource\RelationManagers;
+use App\Models\City;
 use Filament\Forms;
+use Filament\Forms\Components\Select;
 use Filament\Forms\Form;
+use Filament\Pages\SubNavigationPosition;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 
-class StateResource extends Resource
+class CityResource extends Resource
 {
-    protected static ?string $model = State::class;
-
-    protected static ?string $navigationIcon = 'heroicon-o-map';
+    protected static ?string $model = City::class;
 
     public static function getModelLabel(): string
     {
-        return __('Estado');
+        return __('Cidade');
     }
 
+    protected static ?string $navigationIcon = 'heroicon-o-map-pin';
+
+    protected static ?string $cluster = Regioes::class;
+
+    public static SubNavigationPosition $subNavigationPosition = SubNavigationPosition::Top;
     public static function form(Form $form): Form
     {
         return $form
@@ -33,8 +39,13 @@ class StateResource extends Resource
                     ->maxLength(255),
                 Forms\Components\TextInput::make('ibge_code')
                     ->required()
-                    ->unique('states', 'ibge_code', ignoreRecord: true)
+                    ->unique('cities', 'ibge_code', ignoreRecord: true)
                     ->numeric(),
+
+                Select::make('state_id')
+                    ->relationship('state', 'name')
+                    ->searchable()
+                    ->required(),
             ]);
     }
 
@@ -47,6 +58,8 @@ class StateResource extends Resource
                 Tables\Columns\TextColumn::make('ibge_code')
                     ->numeric()
                     ->sortable(),
+
+                Tables\Columns\TextColumn::make('state.name')
             ])
             ->filters([
                 //
@@ -65,7 +78,7 @@ class StateResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ManageStates::route('/'),
+            'index' => Pages\ManageCities::route('/'),
         ];
     }
 }
