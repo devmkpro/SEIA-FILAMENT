@@ -118,7 +118,7 @@ class SchoolResource extends Resource
                             ->dehydrated(fn (?string $state) => filled($state))
                             ->required(fn (string $operation): bool => $operation === 'create'),
 
-                        Forms\Components\Select::make('city_id')
+                        Forms\Components\Select::make('city')
                             ->options(function (callable $get) {
                                 $state = State::find($get('state'));
                                 return $state ? $state->cities->pluck('name', 'id') : ['' => 'Selecione um estado'];
@@ -127,7 +127,6 @@ class SchoolResource extends Resource
                                 return City::find($value)->name;
                             })
                             ->searchable()
-                            ->label('Cidade')
                             ->required(),
                     ])
                         ->columnSpan(1)

@@ -1,29 +1,36 @@
 <?php
 
-namespace App\Filament\Resources;
+namespace App\Filament\Clusters\Cadastros\Resources;
 
-use App\Filament\Resources\UserResource\Pages;
+use App\Filament\Clusters\Cadastros;
+use App\Filament\Clusters\Cadastros\Resources\UserResource\Pages;
+use App\Filament\Clusters\Cadastros\Resources\UserResource\RelationManagers;
 use App\Models\User;
 use Filament\Forms;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Form;
+use Filament\Pages\SubNavigationPosition;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class UserResource extends Resource
 {
     protected static ?string $model = User::class;
+
+    protected static ?string $cluster = Cadastros::class;
+
+    protected static ?string $navigationIcon = 'heroicon-o-user';
 
     public static function getModelLabel(): string
     {
         return __('Usuário');
     }
 
-    protected static ?string $navigationIcon = 'heroicon-o-user';
-
-    protected static ?string $navigationGroup  = 'Administrativo';
-
+    public static SubNavigationPosition $subNavigationPosition = SubNavigationPosition::Top;
 
     public static function form(Form $form): Form
     {
@@ -55,10 +62,12 @@ class UserResource extends Resource
 
                 Select::make('roles')
                     ->options(fn () => \App\Models\Role::all()->pluck('role', 'name')->toArray())
+                    ->relationship('roles', 'name')
                     ->required()
                     ->searchable()
                     ->dehydrated(fn (?string $state) => filled($state))
-                    ->placeholder(__('Selecione um papel')),
+                    ->preload()
+                    ->placeholder(__('Selecione um cargo'))
             ]);
     }
 
@@ -69,6 +78,13 @@ class UserResource extends Resource
                 Tables\Columns\TextColumn::make('name')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('email')
+                    ->searchable(),
+                Tables\Columns\TextColumn::make('primary_role')
+                    ->getStateUsing(
+                        function (Model $record) {
+                            return $record->roles->first()->getRoleAttribute();
+                        }
+                    )
                     ->searchable(),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime(format: 'd/m/Y')
@@ -88,6 +104,7 @@ class UserResource extends Resource
                 ]),
             ]);
     }
+
 
     public static function getPages(): array
     {

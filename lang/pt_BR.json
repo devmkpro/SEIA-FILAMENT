@@ -149,6 +149,7 @@
     "Remove": "Remover",
     "Password confirmation": "Confirmação de senha",
     "Created at": "Criado em",
+    "Updated at": "Atualizado em",
     "State": "Estado",
     "Ibge code": "Código IBGE",
     "School": "Escola",
@@ -168,5 +169,15 @@
     "Cnpj": "CNPJ",
     "Neighborhood": "Bairro",
     "Landline": "Telefone Fixo",
-    "Acronym": "Sigla"
+    "Acronym": "Sigla",
+    "Schools": "Escolas",
+    "User id": "Usuário",
+    "Users": "Usuários",
+    "School id": "Escola",
+    "Role id": "Função",
+    "Role school": "Função Escolar",
+    "Primary role": "Função Principal",
+    "User": "Usuário",
+    "State school": "Estado da Escola",
+    "City school": "Cidade da Escola"
 }
