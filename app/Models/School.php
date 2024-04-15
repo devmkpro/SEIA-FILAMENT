@@ -31,4 +31,21 @@ class School extends Model
     {
         return $this->belongsTo(City::class, 'city_id');
     }
+
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::creating(function ($school) {
+            $school->code = $school->generateCode();
+        });
+    }
+
+    /**
+     * Generate code for the school
+     */
+    public function generateCode(): string
+    {
+        return $this->code = 'SEIA-' . (School::max('id') + 1);
+    }
 }

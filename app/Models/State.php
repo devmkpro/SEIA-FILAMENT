@@ -13,4 +13,9 @@ class State extends Model
         'name',
         'ibge_code',
     ];
+
+    public function cities()
+    {
+        return $this->hasMany(City::class, 'state_id', 'id');
+    }
 }
