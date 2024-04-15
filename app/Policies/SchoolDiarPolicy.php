@@ -10,14 +10,6 @@ use Illuminate\Auth\Access\Response;
 class SchoolDiarPolicy
 {
     /**
-     * Determine whether the user can view any models.
-     */
-    public function viewAny(User $user): bool
-    {
-        return $user->hasPermissionTo('view-any SchoolDiar');
-    }
-
-    /**
      * Determine whether the user can view the model.
      */
     public function view(User $user, SchoolDiar $schoolDiar): bool

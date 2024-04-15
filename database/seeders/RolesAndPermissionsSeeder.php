@@ -88,5 +88,15 @@ class RolesAndPermissionsSeeder extends Seeder
 
         $admin->revokePermissionTo(Permission::all());
         $admin->givePermissionTo(Permission::all());
+
+        $secretary->revokePermissionTo(Permission::all());
+        $secretary->givePermissionTo([
+            'view SchoolDiar',
+            'create SchoolDiar',
+            'update SchoolDiar',
+            'delete SchoolDiar',
+            'restore SchoolDiar',
+            'force-delete SchoolDiar',
+        ]);
     }
 }
