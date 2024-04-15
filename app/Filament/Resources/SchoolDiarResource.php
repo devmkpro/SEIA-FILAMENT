@@ -3,19 +3,17 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\SchoolDiarResource\Pages;
-use App\Filament\Resources\SchoolDiarResource\RelationManagers;
 use App\Models\City;
 use App\Models\School;
 use App\Models\SchoolDiar;
 use App\Models\State;
+use Filament\Actions\Action;
 use Filament\Forms;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class SchoolDiarResource extends Resource
 {
@@ -74,7 +72,9 @@ class SchoolDiarResource extends Resource
                                 if ($city->schools->count() == 0) {
                                     return ['' => 'Nenhuma escola encontrada'];
                                 }
-                                return $city->schools->pluck('name', 'id');
+                                return $city->schools->filter(function ($school) {
+                                    return auth()->user()->hasPermissionForSchool('create SchoolDiar', $school->code);
+                                })->pluck('name', 'id');
                             }
                             return ['' => 'Selecione uma cidade'];
                         }

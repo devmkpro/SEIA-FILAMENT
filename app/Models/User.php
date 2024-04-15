@@ -72,11 +72,13 @@ class User extends Authenticatable implements FilamentUser
 
     public function hasPermissionForSchool(string $permission, string $schoolCode): bool
     {
-        if ($this->hasRole('admin')) {
+
+        $school = School::where('code', $schoolCode)->first();
+
+        if ($this->hasRole('admin') && $school) {
             return true;
         }
 
-        $school = School::where('code', $schoolCode)->first();
         if (!$school || !$this->schools()->where('school_id', $school->id)->exists()) {
             return false;
         }

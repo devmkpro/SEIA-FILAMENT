@@ -72,6 +72,14 @@ class RolesAndPermissionsSeeder extends Seeder
             'delete UserSchool',
             'restore UserSchool',
             'force-delete UserSchool',
+
+            'view-any SchoolDiar',
+            'view SchoolDiar',
+            'create SchoolDiar',
+            'update SchoolDiar',
+            'delete SchoolDiar',
+            'restore SchoolDiar',
+            'force-delete SchoolDiar',
         ];
 
         foreach ($array as $permission) {
