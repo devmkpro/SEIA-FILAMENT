@@ -4,11 +4,9 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\SchoolResource\Pages;
 use App\Models\City;
-use App\Models\Role;
 use App\Models\School;
 use App\Models\State;
 use Filament\Forms;
-use Filament\Forms\Components\Actions;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Form;
@@ -20,7 +18,6 @@ use Illuminate\Database\Eloquent\Builder;
 use Filament\Tables\Actions\Action;
 use Filament\Tables\Enums\ActionsPosition;
 use Illuminate\Support\Facades\Cookie;
-use Illuminate\Support\Facades\Redirect;
 
 class SchoolResource extends Resource
 {
@@ -32,6 +29,8 @@ class SchoolResource extends Resource
     }
 
     protected static ?string $navigationIcon = 'heroicon-o-academic-cap';
+
+    protected static ?string $navigationGroup = 'Administrativo';
 
     public static function getEloquentQuery(): Builder
     {
