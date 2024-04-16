@@ -19,13 +19,18 @@ class CheckSchoolCookie
     public function handle(Request $request, Closure $next): Response
     {
 
-        if ($request->cookie('SHID')) {
-            $school = School::where('code', $request->cookie('SHID'))->first();
-            if (!$school) {
-                Cookie::queue(Cookie::forget('SHID'));
-            }
 
-            $userHasAdminRole = $request->user()->isAdmin();
+        if (!$request->cookie('SHID') || !$request->user()) {
+            return $next($request);
+        }
+
+        $school = School::where('code', $request->cookie('SHID'))->first();
+        if (!$school) {
+            Cookie::queue(Cookie::forget('SHID'));
+        }
+
+        $userHasAdminRole = $request->user()->isAdmin(); // retorna collection
+        if (!$userHasAdminRole) {
             $userHasSchool = $request->user()->schools()->count() > 0 && $request->user()->schools()->where('school_id', $school->id)->exists();
 
             if (!$userHasAdminRole && !$userHasSchool) {

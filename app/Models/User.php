@@ -66,7 +66,7 @@ class User extends Authenticatable implements FilamentUser
 
     public function schools(): mixed
     {
-        if ($this->hasRole('admin')) {
+        if ($this->isAdmin()) {
             return School::all();
         }
 

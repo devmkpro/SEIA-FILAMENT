@@ -198,7 +198,7 @@ class SchoolResource extends Resource
                     ->icon('heroicon-o-academic-cap')
                     ->color('warning')
                     ->action(function ($record) {
-                        if (request()->user()->schools()->where('school_id', $record->id)->exists()) {
+                        if (request()->user()->isAdmin() || request()->user()->schools()->where('school_id', $record->id)->exists()) {
                             Cookie::queue('SHID', $record->code, 60 * 24 * 30);
                             Notification::make()
                                 ->title("{$record->name}")
