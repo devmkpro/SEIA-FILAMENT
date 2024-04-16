@@ -119,6 +119,11 @@ class UserSchoolResource extends Resource
 
                 Tables\Columns\TextColumn::make('school.name')
                     ->sortable(),
+
+                Tables\Columns\TextColumn::make('school.code')
+                    ->label('Código')
+                    ->sortable(),
+
                 Tables\Columns\TextColumn::make('user.name')
                     ->numeric()
                     ->sortable(),

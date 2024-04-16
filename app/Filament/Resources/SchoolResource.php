@@ -19,6 +19,7 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Filament\Tables\Actions\Action;
 use Filament\Tables\Enums\ActionsPosition;
+use Illuminate\Support\Facades\Cookie;
 use Illuminate\Support\Facades\Redirect;
 
 class SchoolResource extends Resource
@@ -197,7 +198,7 @@ class SchoolResource extends Resource
                     ->icon('heroicon-o-academic-cap')
                     ->color('warning')
                     ->action(function ($record) {
-                        setcookie('SHID', $record->code, time() + 3600, '/');
+                        Cookie::queue('SHID', $record->code, 60 * 24 * 30);
                         Notification::make()
                             ->title("{$record->name}")
                             ->body("Você já pode gerenciar a escola!")
