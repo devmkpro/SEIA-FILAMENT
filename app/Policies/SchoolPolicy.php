@@ -16,13 +16,13 @@ class SchoolPolicy
         return $user->hasPermissionTo('view School');
     }
 
-    // /**
-    //  * Determine whether the user can view the model.
-    //  */
-    // public function view(User $user, School $school): bool
-    // {
-    //     return $user->hasPermissionTo('view School');
-    // }
+    /**
+     * Determine whether the user can view the model.
+     */
+    public function view(User $user, School $school): bool
+    {
+        return $user->hasPermissionTo('view School');
+    }
 
     /**
      * Determine whether the user can create models.

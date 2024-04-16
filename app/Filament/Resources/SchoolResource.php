@@ -8,13 +8,18 @@ use App\Models\Role;
 use App\Models\School;
 use App\Models\State;
 use Filament\Forms;
+use Filament\Forms\Components\Actions;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Form;
+use Filament\Notifications\Notification;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
+use Filament\Tables\Actions\Action;
+use Filament\Tables\Enums\ActionsPosition;
+use Illuminate\Support\Facades\Redirect;
 
 class SchoolResource extends Resource
 {
@@ -142,6 +147,8 @@ class SchoolResource extends Resource
             )->columns(3);
     }
 
+
+
     public static function table(Table $table): Table
     {
         return $table
@@ -183,14 +190,23 @@ class SchoolResource extends Resource
                         ->sortable()
                         ->toggleable(isToggledHiddenByDefault: true),
                 ]
-            )->filters([
-                //
-            ])
+            )->filters([])
             ->actions([
-                Tables\Actions\ViewAction::make()
-                    ->color('warning'),
+                Action::make('select')
+                    ->label(__('Gerenciar'))
+                    ->icon('heroicon-o-academic-cap')
+                    ->color('warning')
+                    ->action(function ($record) {
+                        setcookie('SHID', $record->code, time() + 3600, '/');
+                        Notification::make()
+                            ->title("{$record->name}")
+                            ->body("Você já pode gerenciar a escola!")
+                            ->icon("heroicon-o-check-circle")
+                            ->color("success")
+                            ->send();
+                    }),
                 Tables\Actions\EditAction::make(),
-            ])
+            ], position: ActionsPosition::BeforeColumns)
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),
@@ -198,12 +214,6 @@ class SchoolResource extends Resource
             ]);
     }
 
-    public static function getRelations(): array
-    {
-        return [
-            //
-        ];
-    }
 
     public static function getPages(): array
     {
