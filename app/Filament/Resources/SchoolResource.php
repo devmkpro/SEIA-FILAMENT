@@ -116,18 +116,17 @@ class SchoolResource extends Resource
 
 
                     Section::make([
-                        Forms\Components\Select::make('state')
+                        Forms\Components\Select::make('state_id')
                             ->options(State::all()->pluck('name', 'id'))
                             ->searchable()
                             ->reactive()
-                            ->getOptionLabelUsing(fn ($value) => State::find($value)->name)
                             ->afterStateUpdated(fn (callable $set) => $set('city_id', null))
                             ->dehydrated(fn (?string $state) => filled($state))
                             ->required(fn (string $operation): bool => $operation === 'create'),
 
                         Forms\Components\Select::make('city_id')
                             ->options(function (callable $get) {
-                                $state = State::find($get('state'));
+                                $state = State::find($get('state_id'));
                                 return $state ? $state->cities->pluck('name', 'id') : ['' => 'Selecione um estado'];
                             })
                             ->getOptionLabelUsing(function ($value) {
@@ -174,7 +173,9 @@ class SchoolResource extends Resource
                     Tables\Columns\TextColumn::make('city.state.name')
                         ->toggleable(isToggledHiddenByDefault: true),
 
-                    Tables\Columns\TextColumn::make('city.name'),
+                    Tables\Columns\TextColumn::make('city.name')
+                        ->label('Cidade')
+                        ->searchable(),
 
 
                     Tables\Columns\TextColumn::make('created_at')
@@ -186,6 +187,8 @@ class SchoolResource extends Resource
                 //
             ])
             ->actions([
+                Tables\Actions\ViewAction::make()
+                    ->color('warning'),
                 Tables\Actions\EditAction::make(),
             ])
             ->bulkActions([

@@ -41,8 +41,11 @@ class AdminPanelProvider extends PanelProvider
             ->login()
             ->registration()
             ->colors([
-                'primary' => Color::Amber,
+                'primary' => Color::hex('#014bde'),
             ])
+            ->font('Nunito')
+            ->brandLogo(url('/images/logo.svg'))
+            ->viteTheme('resources/css/filament/admin/theme.css')
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\\Filament\\Resources')
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\\Filament\\Pages')
             ->pages([
