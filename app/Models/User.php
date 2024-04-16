@@ -57,8 +57,16 @@ class User extends Authenticatable implements FilamentUser
         return true;
     }
 
-    public function schools(): BelongsToMany
+    public function isAdmin(): bool
     {
+        return $this->hasRole('admin');
+    }
+
+    public function schools(): mixed
+    {
+        if ($this->hasRole('admin')) {
+            return School::all();
+        }
 
         return $this->belongsToMany(School::class, 'user_schools', 'user_id', 'school_id')
             ->withPivot('role_id')

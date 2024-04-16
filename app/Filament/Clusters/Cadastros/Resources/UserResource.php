@@ -30,6 +30,7 @@ class UserResource extends Resource
         return __('Usuário');
     }
 
+
     public static SubNavigationPosition $subNavigationPosition = SubNavigationPosition::Top;
 
     public static function form(Form $form): Form

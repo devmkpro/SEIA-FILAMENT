@@ -13,7 +13,7 @@ class SchoolPolicy
      */
     public function viewAny(User $user): bool
     {
-        return $user->hasPermissionTo('view-any School');
+        return $user->hasPermissionTo('view School');
     }
 
     /**

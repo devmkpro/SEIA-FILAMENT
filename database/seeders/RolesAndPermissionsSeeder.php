@@ -91,6 +91,7 @@ class RolesAndPermissionsSeeder extends Seeder
 
         $secretary->revokePermissionTo(Permission::all());
         $secretary->givePermissionTo([
+            'view School',
             'view SchoolDiar',
             'create SchoolDiar',
             'update SchoolDiar',

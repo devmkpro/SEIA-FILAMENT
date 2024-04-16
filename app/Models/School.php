@@ -48,4 +48,12 @@ class School extends Model
     {
         return $this->code = 'SEIA-' . (School::max('id') + 1);
     }
+
+    /**
+     * Users
+     */
+    public function users()
+    {
+        return $this->belongsToMany(User::class, 'user_schools', 'school_id', 'user_id');
+    }
 }

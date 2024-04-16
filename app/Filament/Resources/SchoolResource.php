@@ -4,18 +4,17 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\SchoolResource\Pages;
 use App\Models\City;
+use App\Models\Role;
 use App\Models\School;
 use App\Models\State;
-use BladeUI\Icons\Components\Icon;
 use Filament\Forms;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Form;
-use Filament\Forms\Get;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
-use Illuminate\Support\Collection;
+use Illuminate\Database\Eloquent\Builder;
 
 class SchoolResource extends Resource
 {
@@ -28,7 +27,17 @@ class SchoolResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-academic-cap';
 
-    protected static ?string $navigationGroup  = 'Administrativo';
+    public static function getEloquentQuery(): Builder
+    {
+
+        if (auth()->user()->isAdmin()) {
+            return static::getModel()::query();
+        }
+
+        return static::getModel()::query()->whereHas('users', function ($query) {
+            $query->where('user_id', auth()->id());
+        });
+    }
 
     public static function form(Form $form): Form
     {
