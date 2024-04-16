@@ -6,6 +6,7 @@ use App\Filament\Clusters\Cadastros;
 use App\Filament\Clusters\Cadastros\Resources\UserSchoolResource\Pages;
 use App\Models\City;
 use App\Models\State;
+use App\Models\User;
 use App\Models\UserSchool;
 use Filament\Forms;
 use Filament\Forms\Components\Select;
@@ -88,10 +89,15 @@ class UserSchoolResource extends Resource
                     ->searchable()
                     ->dehydrated(fn (?string $state) => filled($state))
                     ->placeholder(__('Selecione uma escola')),
+
+
                 Select::make('user_id')
-                    ->options(fn () => \App\Models\User::all()->pluck('name', 'id')->toArray())
+                    ->options(fn () => User::all()->pluck('name', 'id')->toArray())
                     ->required()
                     ->searchable()
+                    ->getSearchResultsUsing(
+                        fn (string $search): array => User::where('email', 'like', "%{$search}%")->limit(50)->pluck('name', 'id')->toArray()
+                    )
                     ->dehydrated(fn (?string $state) => filled($state))
                     ->placeholder(__('Selecione um usuário')),
             ]);

@@ -198,13 +198,15 @@ class SchoolResource extends Resource
                     ->icon('heroicon-o-academic-cap')
                     ->color('warning')
                     ->action(function ($record) {
-                        Cookie::queue('SHID', $record->code, 60 * 24 * 30);
-                        Notification::make()
-                            ->title("{$record->name}")
-                            ->body("Você já pode gerenciar a escola!")
-                            ->icon("heroicon-o-check-circle")
-                            ->color("success")
-                            ->send();
+                        if (request()->user()->schools()->where('school_id', $record->id)->exists()) {
+                            Cookie::queue('SHID', $record->code, 60 * 24 * 30);
+                            Notification::make()
+                                ->title("{$record->name}")
+                                ->body("Você já pode gerenciar a escola!")
+                                ->icon("heroicon-o-check-circle")
+                                ->color("success")
+                                ->send();
+                        }
                     }),
                 Tables\Actions\EditAction::make(),
             ], position: ActionsPosition::BeforeColumns)
