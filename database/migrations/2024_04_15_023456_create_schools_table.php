@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('schools', function (Blueprint $table) {
             $table->id();
             $table->string('code')->unique();
-            $table->enum('active', ['Ativa', 'Inativa']);
+            $table->enum('active', ['Ativa', 'Inativa'])->default('Ativa');
             $table->enum('type', ['Municipal', 'Estadual', 'Federal', 'Privada']);
             $table->enum('category', ['Creche', 'Pré-Escola', 'Fundamental', 'Médio', 'Superior']);
             $table->string('name', 200);

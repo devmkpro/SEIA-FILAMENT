@@ -90,8 +90,6 @@ class RolesAndPermissionsSeeder extends Seeder
         $admin->givePermissionTo(Permission::all());
 
         $secretary->revokePermissionTo(Permission::all());
-        $secretary->givePermissionTo([
-            'view School',
-        ]);
+        $secretary->givePermissionTo();
     }
 }

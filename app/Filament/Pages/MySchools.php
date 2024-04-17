@@ -10,7 +10,6 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Notifications\Notification;
 use Filament\Pages\Page;
 use Filament\Tables\Table;
-use Illuminate\Contracts\View\View;
 use Filament\Forms\Contracts\HasForms;
 use Filament\Tables\Contracts\HasTable;
 use Filament\Tables\Concerns\InteractsWithTable;
@@ -22,7 +21,7 @@ class MySchools extends Page implements HasForms, HasTable
     use InteractsWithTable;
     use InteractsWithForms;
 
-    protected static ?string $navigationIcon = 'heroicon-o-document-text';
+    protected static ?string $navigationIcon = 'heroicon-o-academic-cap';
 
     protected static string $view = 'filament.pages.my-schools';
 

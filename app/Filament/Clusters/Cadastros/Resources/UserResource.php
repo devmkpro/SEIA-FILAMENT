@@ -8,12 +8,14 @@ use App\Models\User;
 use Filament\Forms;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Form;
+use Filament\Notifications\Notification;
 use Filament\Pages\SubNavigationPosition;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Enums\ActionsPosition;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Model;
+use Filament\Tables\Actions\Action;
 
 class UserResource extends Resource
 {
@@ -35,6 +37,17 @@ class UserResource extends Resource
     {
         return $form
             ->schema([
+
+                Select::make('active')
+                    ->options([
+                        'Ativa' => 'Ativa',
+                        'Inativa' => 'Inativa',
+                    ])
+                    ->native(false)
+                    ->default('Ativa')
+                    ->label('Status'),
+
+
                 Forms\Components\TextInput::make('name')
                     ->required()
                     ->maxLength(255),
@@ -80,7 +93,7 @@ class UserResource extends Resource
                 Tables\Columns\TextColumn::make('primary_role')
                     ->getStateUsing(
                         function (Model $record) {
-                            return $record->roles->first()->getRoleAttribute();
+                            return $record->roles->first() ? $record->roles->first()->role : 'Nenhuma';
                         }
                     )
                     ->searchable(),
@@ -94,7 +107,6 @@ class UserResource extends Resource
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
-                Tables\Actions\DeleteAction::make(),
             ], position: ActionsPosition::BeforeColumns)
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
