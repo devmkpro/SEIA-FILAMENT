@@ -32,6 +32,7 @@ class SchoolResource extends Resource
 
     protected static ?string $navigationGroup = 'Administrativo';
 
+
     public static function getEloquentQuery(): Builder
     {
 

@@ -64,7 +64,6 @@ class UserResource extends Resource
                     ->options(fn () => \App\Models\Role::all()->pluck('role', 'id')->toArray())
                     ->required()
                     ->searchable()
-                    ->dehydrated(fn (?string $state) => filled($state))
                     ->preload()
                     ->placeholder(__('Selecione um cargo'))
             ]);
