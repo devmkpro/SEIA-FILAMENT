@@ -73,13 +73,7 @@ class RolesAndPermissionsSeeder extends Seeder
             'restore UserSchool',
             'force-delete UserSchool',
 
-            'view-any SchoolDiar',
-            'view SchoolDiar',
-            'create SchoolDiar',
-            'update SchoolDiar',
-            'delete SchoolDiar',
-            'restore SchoolDiar',
-            'force-delete SchoolDiar',
+            'select-my School'
         ];
 
         foreach ($array as $permission) {
@@ -90,6 +84,8 @@ class RolesAndPermissionsSeeder extends Seeder
         $admin->givePermissionTo(Permission::all());
 
         $secretary->revokePermissionTo(Permission::all());
-        $secretary->givePermissionTo();
+        $secretary->givePermissionTo([
+            'select-my School'
+        ]);
     }
 }
