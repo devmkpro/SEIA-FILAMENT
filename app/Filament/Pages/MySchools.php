@@ -25,6 +25,9 @@ class MySchools extends Page implements HasForms, HasTable
 
     protected static string $view = 'filament.pages.my-schools';
 
+    // change name page
+    public static ?string $title = 'Minhas Escolas';
+
     public function tableQuery(): \Illuminate\Database\Eloquent\Builder
     {
         if (request()->user()->isAdmin()) {
