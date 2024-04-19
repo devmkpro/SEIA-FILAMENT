@@ -19,7 +19,6 @@ class Periodos extends Cluster
         }
 
         $school = School::where('code', request()->cookie('SHID'))->first();
-
         if (!$school) {
             return false;
         }

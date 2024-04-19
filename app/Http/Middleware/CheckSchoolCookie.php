@@ -27,6 +27,10 @@ class CheckSchoolCookie
         $school = School::where('code', $request->cookie('SHID'))->first();
         if (!$school) {
             Cookie::queue(Cookie::forget('SHID'));
+            return Redirect::back()->withErrors('Escola não encontrada');
+        } else if ($school->active == 'Inativa') {
+            Cookie::queue(Cookie::forget('SHID'));
+            return Redirect::back()->with('Sua escola foi inativada');
         }
 
         $userHasAdminRole = $request->user()->isAdmin(); // retorna collection

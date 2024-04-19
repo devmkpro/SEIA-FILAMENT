@@ -69,17 +69,28 @@ class MySchools extends Page implements HasForms, HasTable
                     ->color('warning')
                     ->action(function ($record) {
                         if (request()->user()->isAdmin() || request()->user()->schools()->where('school_id', $record->id)->exists()) {
-                            Cookie::queue('SHID', $record->code, 60 * 24 * 30);
 
+                            if ($record->active == 'Inativa') {
+                                Notification::make()
+                                    ->title("{$record->name}")
+                                    ->body("Escola inativa! Não é possível gerenciar.")
+                                    ->icon("heroicon-o-x-circle")
+                                    ->color("danger")
+                                    ->send();
 
-                            Notification::make()
-                                ->title("{$record->name}")
-                                ->body("Você já pode gerenciar a escola!")
-                                ->icon("heroicon-o-check-circle")
-                                ->color("success")
-                                ->send();
+                                return;
+                            } else {
+                                Cookie::queue('SHID', $record->code, 60 * 24 * 30);
 
-                            Redirect::to('/admin');
+                                Notification::make()
+                                    ->title("{$record->name}")
+                                    ->body("Você já pode gerenciar a escola!")
+                                    ->icon("heroicon-o-check-circle")
+                                    ->color("success")
+                                    ->send();
+
+                                Redirect::to('/admin');
+                            }
                         }
                     }),
             ], position: ActionsPosition::BeforeColumns);

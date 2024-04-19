@@ -75,13 +75,13 @@ class User extends Authenticatable implements FilamentUser
             ->withTimestamps();
     }
 
-    public function hasRoleForSchool($role, $schoolCode)
+    public function hasRoleForSchool($role,  ?string $schoolCode)
     {
         $role = Role::where('name', $role)->first();
         return $this->schools()->where('code', $schoolCode)->wherePivot('role_id', $role->id)->exists();
     }
 
-    public function hasPermissionForSchool(string $permission, string $schoolCode): bool
+    public function hasPermissionForSchool(string $permission, ?string $schoolCode): bool
     {
 
         $school = School::where('code', $schoolCode)->first();

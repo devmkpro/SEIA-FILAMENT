@@ -33,6 +33,15 @@ class PeriodSchoolYearResource extends Resource
 
     public static function canAccess(): bool
     {
+        if (!request()->cookie('SHID')) {
+            return false;
+        }
+
+        $school = School::where('code', request()->cookie('SHID'))->first();
+        if (!$school) {
+            return false;
+        }
+
         $anoLetivo = SchoolYear::where('active', 'Ativa')->first();
         if (!$anoLetivo) {
             return false;
