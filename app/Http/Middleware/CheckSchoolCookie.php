@@ -28,7 +28,7 @@ class CheckSchoolCookie
         if (!$school) {
             Cookie::queue(Cookie::forget('SHID'));
             return Redirect::back()->withErrors('Escola não encontrada');
-        } else if ($school->active == 'Inativa') {
+        } else if ($school->active == 'Inativa' && !$request->user()->isAdmin()) {
             Cookie::queue(Cookie::forget('SHID'));
             return Redirect::back()->with('Sua escola foi inativada');
         }

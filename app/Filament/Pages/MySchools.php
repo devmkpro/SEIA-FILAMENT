@@ -70,7 +70,7 @@ class MySchools extends Page implements HasForms, HasTable
                     ->action(function ($record) {
                         if (request()->user()->isAdmin() || request()->user()->schools()->where('school_id', $record->id)->exists()) {
 
-                            if ($record->active == 'Inativa') {
+                            if ($record->active == 'Inativa' && !request()->user()->isAdmin()) {
                                 Notification::make()
                                     ->title("{$record->name}")
                                     ->body("Escola inativa! Não é possível gerenciar.")
