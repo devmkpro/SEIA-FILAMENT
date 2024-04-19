@@ -18,7 +18,7 @@ class CheckSchoolCookieForPages
     public function handle(Request $request, Closure $next): bool
     {
         if (!$request->cookie('SHID') || !$request->user()) {
-            return false;
+            return true;
         }
 
         $school = School::where('code', $request->cookie('SHID'))->first();

@@ -3,6 +3,7 @@
 namespace App\Filament\Clusters;
 
 use App\Http\Middleware\CheckSchoolCookieForPages;
+use App\Http\Middleware\RequireSchoolCookie;
 use App\Models\School;
 use Filament\Clusters\Cluster;
 use Illuminate\Support\Facades\Redirect;
@@ -15,10 +16,21 @@ class Periodos extends Cluster
 
     public static function canAccess(): bool
     {
-        $middleware = new CheckSchoolCookieForPages();
-        $isValid = $middleware->handle(request(), function ($request) {
+        $isValid = (new RequireSchoolCookie())->handle(request(), function ($request) {
             return false;
         });
+
+        if (!$isValid) {
+            return false;
+        }
+
+        $isValid = (new CheckSchoolCookieForPages())->handle(request(), function ($request) {
+            return false;
+        });
+
+        if (!$isValid) {
+            return false;
+        }
 
         return $isValid;
     }

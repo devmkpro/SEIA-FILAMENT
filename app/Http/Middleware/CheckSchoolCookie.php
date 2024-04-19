@@ -19,27 +19,14 @@ class CheckSchoolCookie
     public function handle(Request $request, Closure $next): Response
     {
 
+        $middleware = new CheckSchoolCookieForPages();
+        $isValid = $middleware->handle(request(), function ($request) {
+            return false;
+        });
 
-        if (!$request->cookie('SHID') || !$request->user()) {
-            return $next($request);
-        }
-
-        $school = School::where('code', $request->cookie('SHID'))->first();
-        if (!$school) {
+        if (!$isValid) {
             Cookie::queue(Cookie::forget('SHID'));
-            return Redirect::back()->withErrors('Escola não encontrada');
-        } else if ($school->active == 'Inativa' && !$request->user()->isAdmin()) {
-            Cookie::queue(Cookie::forget('SHID'));
-            return Redirect::back()->with('Sua escola foi inativada');
-        }
-
-        $userHasAdminRole = $request->user()->isAdmin(); // retorna collection
-        if (!$userHasAdminRole) {
-            $userHasSchool = $request->user()->schools()->count() > 0 && $request->user()->schools()->where('school_id', $school->id)->exists();
-
-            if (!$userHasAdminRole && !$userHasSchool) {
-                Cookie::queue(Cookie::forget('SHID'));
-            }
+            return Redirect::back()->withErrors('Escola não encontrada para gerenciamento.');
         }
 
         return $next($request);
