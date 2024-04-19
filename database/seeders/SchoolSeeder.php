@@ -13,6 +13,6 @@ class SchoolSeeder extends Seeder
      */
     public function run(): void
     {
-        $school = School::factory(2)->create();
+        School::factory(2)->create();
     }
 }
