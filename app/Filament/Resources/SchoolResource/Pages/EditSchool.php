@@ -3,7 +3,6 @@
 namespace App\Filament\Resources\SchoolResource\Pages;
 
 use App\Filament\Resources\SchoolResource;
-use Filament\Actions;
 use Filament\Resources\Pages\EditRecord;
 
 class EditSchool extends EditRecord
@@ -12,8 +11,6 @@ class EditSchool extends EditRecord
 
     protected function getHeaderActions(): array
     {
-        return [
-            Actions\DeleteAction::make(),
-        ];
+        return [];
     }
 }

@@ -26,6 +26,10 @@ class AppServiceProvider extends ServiceProvider
                 NavigationGroup::make()
                     ->label('Administrativo')
                     ->collapsed(),
+
+                NavigationGroup::make()
+                    ->label('Secretaria')
+                    ->collapsed(),
             ]);
         });
     }

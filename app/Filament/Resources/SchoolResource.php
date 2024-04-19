@@ -3,21 +3,21 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\SchoolResource\Pages;
-use App\Models\City;
 use App\Models\School;
-use App\Models\State;
 use Filament\Forms;
-use Filament\Forms\Components\Section;
-use Filament\Forms\Components\Select;
 use Filament\Forms\Form;
-use Filament\Notifications\Notification;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
-use Filament\Tables\Actions\Action;
+use App\Models\City;
+use App\Models\State;
+use Filament\Forms\Components\Section;
+use Filament\Forms\Components\Select;
+use Filament\Notifications\Notification;
 use Filament\Tables\Enums\ActionsPosition;
 use Illuminate\Support\Facades\Cookie;
+use Filament\Tables\Actions\Action;
 
 class SchoolResource extends Resource
 {
@@ -31,7 +31,6 @@ class SchoolResource extends Resource
     protected static ?string $navigationIcon = 'heroicon-o-academic-cap';
 
     protected static ?string $navigationGroup = 'Administrativo';
-
 
     public static function getEloquentQuery(): Builder
     {
@@ -51,38 +50,10 @@ class SchoolResource extends Resource
             ->schema(
                 [
                     Section::make(
-
                         [
-                            Select::make('active')
-                                ->options([
-                                    'Ativa' => 'Ativa',
-                                    'Inativa' => 'Inativa',
-                                ])
-                                ->native(false)
-                                ->default('Ativa')
-                                ->label('Status'),
-                            Select::make('type')
-                                ->options([
-                                    'Municipal' => 'Municipal',
-                                    'Estadual' => 'Estadual',
-                                    'Federal' => 'Federal',
-                                    'Privada' => 'Privada',
-                                ])
-                                ->label('Tipo de Escola')
-                                ->searchable()
-                                ->required(),
-
-                            Select::make('category')
-                                ->options([
-                                    'Creche' => 'Creche',
-                                    'Pré-Escola' => 'Pré-Escola',
-                                    'Fundamental' => 'Fundamental',
-                                    'Médio' => 'Médio',
-                                    'Superior' => 'Superior',
-                                ])
-                                ->searchable()
-                                ->required(),
-
+                            self::makeActiveSelect(),
+                            self::makeTypeSelect(),
+                            self::makeCategorySelect(),
                             Forms\Components\TextInput::make('name')
                                 ->required()
                                 ->maxLength(200),
@@ -114,41 +85,82 @@ class SchoolResource extends Resource
                                 ->maxLength(200),
                             Forms\Components\TextInput::make('acronym')
                                 ->maxLength(10)
-                                ->columnSpan(2)
+                                ->columnSpan(2),
                         ]
                     )->columnSpan(2)
                         ->icon('heroicon-o-academic-cap')
                         ->description('Informações Gerais'),
-
-
-                    Section::make([
-                        Forms\Components\Select::make('state_id')
-                            ->options(State::all()->pluck('name', 'id'))
-                            ->searchable()
-                            ->reactive()
-                            ->afterStateUpdated(fn (callable $set) => $set('city_id', null))
-                            ->dehydrated(fn (?string $state) => filled($state))
-                            ->required(fn (string $operation): bool => $operation === 'create'),
-
-                        Forms\Components\Select::make('city_id')
-                            ->options(function (callable $get) {
-                                $state = State::find($get('state_id'));
-                                return $state ? $state->cities->pluck('name', 'id') : ['' => 'Selecione um estado'];
-                            })
-                            ->getOptionLabelUsing(function ($value) {
-                                return City::find($value)->name;
-                            })
-                            ->searchable()
-                            ->required(),
-                    ])
-                        ->columnSpan(1)
-                        ->icon('heroicon-o-globe-americas')
-                        ->description('Localização')
+                    self::makeLocationSection(),
                 ]
             )->columns(3);
     }
 
+    private static function makeActiveSelect(): Select
+    {
+        return Select::make('active')
+            ->options([
+                'Ativa' => 'Ativa',
+                'Inativa' => 'Inativa',
+            ])
+            ->native(false)
+            ->default('Ativa')
+            ->label('Status');
+    }
 
+    private static function makeTypeSelect(): Select
+    {
+        return Select::make('type')
+            ->options([
+                'Municipal' => 'Municipal',
+                'Estadual' => 'Estadual',
+                'Federal' => 'Federal',
+                'Privada' => 'Privada',
+            ])
+            ->label('Tipo de Escola')
+            ->searchable()
+            ->required();
+    }
+
+    private static function makeCategorySelect(): Select
+    {
+        return Select::make('category')
+            ->options([
+                'Creche' => 'Creche',
+                'Pré-Escola' => 'Pré-Escola',
+                'Fundamental' => 'Fundamental',
+                'Médio' => 'Médio',
+                'Superior' => 'Superior',
+            ])
+            ->searchable()
+            ->required();
+    }
+
+    private static function makeLocationSection(): Section
+    {
+        return Section::make([
+            Forms\Components\Select::make('state_id')
+                ->options(State::all()->pluck('name', 'id'))
+                ->searchable()
+                ->reactive()
+                ->afterStateUpdated(fn (callable $set) => $set('city_id', null))
+                ->dehydrated(fn (?string $state) => filled($state))
+                ->required(fn (string $operation): bool => $operation === 'create'),
+
+            Forms\Components\Select::make('city_id')
+                ->options(function (callable $get) {
+                    $state = State::find($get('state_id'));
+                    return $state ? $state->cities->pluck('name', 'id') : ['' => 'Selecione um estado'];
+                })
+                ->getOptionLabelUsing(function ($value) {
+                    return City::find($value)->name;
+                })
+                ->searchable()
+                ->required(),
+        ])
+            ->columnSpan(1)
+            ->icon('heroicon-o-globe-americas')
+            ->description('Localização');
+    }
 
     public static function table(Table $table): Table
     {

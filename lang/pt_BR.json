@@ -182,5 +182,10 @@
     "City school": "Cidade da Escola",
     "City id": "Cidade",
     "State id": "Estado",
-    "Select": "Selecione"
+    "Select": "Selecione",
+    "School Years": "Anos Letivos",
+    "Start date": "Data de Início",
+    "End date": "Data de Término",
+    "School year": "Ano Letivo",
+    "Periods": "Períodos"
 }

@@ -14,6 +14,7 @@ use Filament\Forms\Contracts\HasForms;
 use Filament\Tables\Contracts\HasTable;
 use Filament\Tables\Concerns\InteractsWithTable;
 use Filament\Forms\Concerns\InteractsWithForms;
+use Illuminate\Support\Facades\Redirect;
 
 class MySchools extends Page implements HasForms, HasTable
 {
@@ -69,12 +70,16 @@ class MySchools extends Page implements HasForms, HasTable
                     ->action(function ($record) {
                         if (request()->user()->isAdmin() || request()->user()->schools()->where('school_id', $record->id)->exists()) {
                             Cookie::queue('SHID', $record->code, 60 * 24 * 30);
+
+
                             Notification::make()
                                 ->title("{$record->name}")
                                 ->body("Você já pode gerenciar a escola!")
                                 ->icon("heroicon-o-check-circle")
                                 ->color("success")
                                 ->send();
+
+                            Redirect::to('/admin');
                         }
                     }),
             ], position: ActionsPosition::BeforeColumns);

@@ -73,7 +73,24 @@ class RolesAndPermissionsSeeder extends Seeder
             'restore UserSchool',
             'force-delete UserSchool',
 
-            'select-my School'
+            'view-any SchoolYear',
+            'view SchoolYear',
+            'create SchoolYear',
+            'update SchoolYear',
+            'delete SchoolYear',
+            'restore SchoolYear',
+            'force-delete SchoolYear',
+
+            'select-my School',
+
+
+            'view-any Period',
+            'view Period',
+            'create Period',
+            'update Period',
+            'delete Period',
+            'restore Period',
+            'force-delete Period',
         ];
 
         foreach ($array as $permission) {
@@ -85,7 +102,14 @@ class RolesAndPermissionsSeeder extends Seeder
 
         $secretary->revokePermissionTo(Permission::all());
         $secretary->givePermissionTo([
-            'select-my School'
+            'select-my School',
+            'view-any Period',
+            'view Period',
+            'create Period',
+            'update Period',
+            'delete Period',
+            'restore Period',
+            'force-delete Period',
         ]);
     }
 }
