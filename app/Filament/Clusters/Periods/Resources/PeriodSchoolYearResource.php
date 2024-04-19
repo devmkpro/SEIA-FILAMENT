@@ -4,6 +4,7 @@ namespace App\Filament\Clusters\Periods\Resources;
 
 use App\Filament\Clusters\Periodos;
 use App\Filament\Clusters\Periods\Resources\PeriodSchoolYearResource\Pages;
+use App\Http\Middleware\CheckSchoolCookieForPages;
 use App\Models\PeriodSchoolYear;
 use App\Models\School;
 use App\Models\SchoolYear;
@@ -33,12 +34,12 @@ class PeriodSchoolYearResource extends Resource
 
     public static function canAccess(): bool
     {
-        if (!request()->cookie('SHID')) {
+        $middleware = new CheckSchoolCookieForPages();
+        $isValid = $middleware->handle(request(), function ($request) {
             return false;
-        }
+        });
 
-        $school = School::where('code', request()->cookie('SHID'))->first();
-        if (!$school) {
+        if (!$isValid) {
             return false;
         }
 

@@ -2,6 +2,7 @@
 
 namespace App\Filament\Clusters;
 
+use App\Http\Middleware\CheckSchoolCookieForPages;
 use App\Models\School;
 use Filament\Clusters\Cluster;
 use Illuminate\Support\Facades\Redirect;
@@ -14,16 +15,12 @@ class Periodos extends Cluster
 
     public static function canAccess(): bool
     {
-        if (!request()->cookie('SHID')) {
+        $middleware = new CheckSchoolCookieForPages();
+        $isValid = $middleware->handle(request(), function ($request) {
             return false;
-        }
+        });
 
-        $school = School::where('code', request()->cookie('SHID'))->first();
-        if (!$school) {
-            return false;
-        }
-
-        return true;
+        return $isValid;
     }
 
     public static function redirectIfNotCanAccess(): void
