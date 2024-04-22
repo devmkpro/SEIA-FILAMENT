@@ -118,6 +118,7 @@ class PeriodSchoolYearResource extends Resource
             )
             ->label('Ano Letivo')
             ->default(SchoolYear::where('active', 'Ativa')->first()->id)
+            ->disabled(fn ($operation) => $operation === 'edit')
             ->required();
     }
 
@@ -129,6 +130,7 @@ class PeriodSchoolYearResource extends Resource
             )
             ->label('Escola')
             ->default(School::where('code', request()->cookie('SHID'))->first()->id)
+            ->disabled(fn ($operation) => $operation === 'edit')
             ->required();
     }
 
@@ -141,6 +143,7 @@ class PeriodSchoolYearResource extends Resource
             ])
             ->native(false)
             ->required()
+            ->disabled(fn ($operation) => $operation === 'edit')
             ->label('Tipo');
     }
 

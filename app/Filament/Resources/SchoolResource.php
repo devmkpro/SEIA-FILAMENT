@@ -66,6 +66,7 @@ class SchoolResource extends Resource
                             self::makeTypeSelect(),
                             self::makeCategorySelect(),
                             Forms\Components\TextInput::make('name')
+                                ->placeholder('Nome da escola')
                                 ->required()
                                 ->maxLength(200),
                             Forms\Components\TextInput::make('email')
