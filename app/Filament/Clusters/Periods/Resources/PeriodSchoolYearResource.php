@@ -2,7 +2,7 @@
 
 namespace App\Filament\Clusters\Periods\Resources;
 
-use App\Filament\Clusters\Periodos;
+use App\Filament\Clusters\Periods;
 use App\Filament\Clusters\Periods\Resources\PeriodSchoolYearResource\Pages;
 use App\Http\Middleware\CheckSchoolCookieForPages;
 use App\Http\Middleware\RequireSchoolCookie;
@@ -16,11 +16,10 @@ use Filament\Pages\SubNavigationPosition;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
-use Illuminate\Support\Facades\Redirect;
 
 class PeriodSchoolYearResource extends Resource
 {
-    protected static ?string $cluster = Periodos::class;
+    protected static ?string $cluster = Periods::class;
 
     protected static ?string $model = PeriodSchoolYear::class;
 

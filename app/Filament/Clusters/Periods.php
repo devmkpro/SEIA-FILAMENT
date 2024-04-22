@@ -8,7 +8,7 @@ use App\Models\School;
 use Filament\Clusters\Cluster;
 use Illuminate\Support\Facades\Redirect;
 
-class Periodos extends Cluster
+class Periods extends Cluster
 {
     protected static ?string $navigationIcon = 'heroicon-o-calendar';
 
