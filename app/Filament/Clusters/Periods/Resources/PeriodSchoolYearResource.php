@@ -29,7 +29,7 @@ class PeriodSchoolYearResource extends Resource
 
     public static function getModelLabel(): string
     {
-        return __('Período');
+        return __('Period');
     }
 
     public static function canAccess(): bool
@@ -112,7 +112,9 @@ class PeriodSchoolYearResource extends Resource
     {
         return Select::make('school_year_id')
             ->options(
-                SchoolYear::where('active', 'Ativa')->get()->pluck('school_year', 'id')
+                SchoolYear::where('active', 'Ativa')
+                    ->get()
+                    ->pluck('school_year', 'id')
             )
             ->label('Ano Letivo')
             ->default(SchoolYear::where('active', 'Ativa')->first()->id)
@@ -145,6 +147,10 @@ class PeriodSchoolYearResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
+            ->query(
+                PeriodSchoolYear::where('school_id', School::where('code', request()->cookie('SHID'))->first()->id)
+                    ->where('school_year_id', request()->cookie('SHYID'))
+            )
             ->columns([
                 Tables\Columns\TextColumn::make('active'),
                 Tables\Columns\TextColumn::make('schoolYear.school_year')

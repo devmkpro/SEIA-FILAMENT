@@ -17,7 +17,7 @@ return new class extends Migration
             $table->foreignId('period_school_years_id')->constrained();
             $table->date('start_date');
             $table->date('end_date');
-            $table->enum('bimester', ['1', '2', '3', '4']);
+            $table->enum('bimester', ['1º Bimestre', '2º Bimestre', '3º Bimestre', '4º Bimestre']);
             $table->timestamps();
         });
     }

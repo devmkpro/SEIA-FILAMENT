@@ -75,6 +75,7 @@ class MySchools extends Page implements HasForms, HasTable
                         Select::make('school_year_id')
                             ->label('Selecionar Ano Letivo')
                             ->options(\App\Models\SchoolYear::all()->pluck('school_year', 'id'))
+                            ->default(\App\Models\SchoolYear::where('school_year', date('Y'))->first()->id)
                             ->required(),
                     ])
                     ->action(function (array $data, $record) {

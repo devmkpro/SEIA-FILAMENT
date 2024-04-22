@@ -19,16 +19,6 @@ class PeriodBimonthly extends Model
 
     public function periodSchoolYear()
     {
-        return $this->belongsTo(PeriodSchoolYear::class);
-    }
-
-    public function getBimesterAttribute()
-    {
-        return match ($this->attributes['bimester']) {
-            '1' => '1º Bimestre',
-            '2' => '2º Bimestre',
-            '3' => '3º Bimestre',
-            '4' => '4º Bimestre',
-        };
+        return $this->belongsTo(PeriodSchoolYear::class, 'period_school_years_id');
     }
 }

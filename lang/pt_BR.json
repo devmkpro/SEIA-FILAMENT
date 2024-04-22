@@ -189,5 +189,9 @@
     "School year": "Ano Letivo",
     "Periods": "Períodos",
     "Total Users": "Total de Usuários",
-    "The total number of users in the system.": "O número total de usuários no sistema."
+    "The total number of users in the system.": "O número total de usuários no sistema.",
+    "Bimonthly": "Bimestre",
+    "Period": "Período",
+    "Period school years id": "Período do Ano Letivo",
+    "Bimester": "Bimestre"
 }
