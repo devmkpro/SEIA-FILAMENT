@@ -11,10 +11,10 @@ class UsersOverview extends BaseWidget
     protected function getStats(): array
     {
         return [
-            Stat::make(
-                __('Total Users'),
-                User::query()->count()
-            ),
+            Stat::make(__('Total Users'), User::query()->count())
+                ->description(
+                    __('The total number of users in the system.')
+                ),
         ];
     }
 

@@ -3,6 +3,7 @@
 namespace App\Http\Middleware;
 
 use App\Models\School;
+use App\Models\SchoolYear;
 use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cookie;
@@ -37,6 +38,12 @@ class CheckSchoolCookieForPages
                 Cookie::queue(Cookie::forget('SHID'));
                 return false;
             }
+        }
+
+        $schoolYear = $request->cookie('SHYID');
+        if (!$schoolYear || !SchoolYear::find($schoolYear)) {
+            Cookie::queue(Cookie::forget('SHYID'));
+            return false;
         }
 
         return true;

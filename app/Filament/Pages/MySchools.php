@@ -2,7 +2,9 @@
 
 namespace App\Filament\Pages;
 
-
+use App\Models\SchoolYear;
+use App\Models\User;
+use Filament\Forms\Components\Select;
 use Illuminate\Support\Facades\Cookie;
 use Filament\Tables\Actions\Action;
 use Filament\Tables\Enums\ActionsPosition;
@@ -58,16 +60,24 @@ class MySchools extends Page implements HasForms, HasTable
                     ->label('Cidade')
                     ->searchable(),
 
+
+
             ])
             ->filters([
                 //
             ])
             ->actions([
-                Action::make('select')
+                Action::make('select_school_year')
                     ->label(__('Gerenciar'))
                     ->icon('heroicon-o-academic-cap')
                     ->color('warning')
-                    ->action(function ($record) {
+                    ->form([
+                        Select::make('school_year_id')
+                            ->label('Selecionar Ano Letivo')
+                            ->options(\App\Models\SchoolYear::all()->pluck('school_year', 'id'))
+                            ->required(),
+                    ])
+                    ->action(function (array $data, $record) {
                         if (request()->user()->isAdmin() || request()->user()->schools()->where('school_id', $record->id)->exists()) {
 
                             if ($record->active == 'Inativa' && !request()->user()->isAdmin()) {
@@ -79,7 +89,15 @@ class MySchools extends Page implements HasForms, HasTable
                                     ->send();
 
                                 return;
+                            } else if (!SchoolYear::find($data['school_year_id'])) {
+                                Notification::make()
+                                    ->title("Falha ao selecionar ano letivo")
+                                    ->body("Ano letivo inválido!")
+                                    ->icon("heroicon-o-x-circle")
+                                    ->color("danger")
+                                    ->send();
                             } else {
+                                Cookie::queue('SHYID', $data['school_year_id'], 60 * 24 * 30);
                                 Cookie::queue('SHID', $record->code, 60 * 24 * 30);
 
                                 Notification::make()
@@ -92,7 +110,7 @@ class MySchools extends Page implements HasForms, HasTable
                                 Redirect::to('/admin');
                             }
                         }
-                    }),
+                    })
             ], position: ActionsPosition::BeforeColumns);
     }
 }
