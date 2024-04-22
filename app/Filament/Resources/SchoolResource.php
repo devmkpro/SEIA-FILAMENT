@@ -32,6 +32,17 @@ class SchoolResource extends Resource
 
     protected static ?string $navigationGroup = 'Administrativo';
 
+    public static function getSchoolYearId()
+    {
+        return request()->cookie('SHYID');
+    }
+
+    public static function getSchoolId()
+    {
+        return School::where('code', request()->cookie('SHID'))->first()->id;
+    }
+
+
     public static function getEloquentQuery(): Builder
     {
 
@@ -205,21 +216,6 @@ class SchoolResource extends Resource
                 ]
             )->filters([])
             ->actions([
-                Action::make('select')
-                    ->label(__('Gerenciar'))
-                    ->icon('heroicon-o-academic-cap')
-                    ->color('warning')
-                    ->action(function ($record) {
-                        if (request()->user()->isAdmin() || request()->user()->schools()->where('school_id', $record->id)->exists()) {
-                            Cookie::queue('SHID', $record->code, 60 * 24 * 30);
-                            Notification::make()
-                                ->title("{$record->name}")
-                                ->body("Você já pode gerenciar a escola!")
-                                ->icon("heroicon-o-check-circle")
-                                ->color("success")
-                                ->send();
-                        }
-                    }),
                 Tables\Actions\EditAction::make(),
             ], position: ActionsPosition::BeforeColumns)
             ->bulkActions([

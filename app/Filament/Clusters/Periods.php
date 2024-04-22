@@ -2,6 +2,7 @@
 
 namespace App\Filament\Clusters;
 
+use App\Filament\Resources\SchoolResource;
 use App\Http\Middleware\CheckSchoolCookieForPages;
 use App\Http\Middleware\RequireSchoolCookie;
 use App\Models\School;
@@ -13,6 +14,18 @@ class Periods extends Cluster
     protected static ?string $navigationIcon = 'heroicon-o-calendar';
 
     protected static ?string $navigationGroup = 'Secretaria';
+
+
+    public static function getSchoolId(): int
+    {
+        return SchoolResource::getSchoolId();
+    }
+
+    public static function getSchoolYearId(): int
+    {
+        return SchoolResource::getSchoolYearId();
+    }
+
 
     public static function canAccess(): bool
     {
@@ -37,11 +50,14 @@ class Periods extends Cluster
 
     public static function redirectIfNotCanAccess(): void
     {
-        if (!request()->cookie('SHID')) {
+        if (!self::getSchoolId()) {
             Redirect::route('select-school');
         }
 
-        $school = School::where('code', request()->cookie('SHID'))->first();
+        $school = School::where(
+            'code',
+            self::getSchoolId()
+        )->first();
 
         if (!$school) {
             Redirect::route('select-school');

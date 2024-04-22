@@ -5,6 +5,7 @@ namespace App\Filament\Clusters\Periods\Resources;
 use App\Filament\Clusters\Periods;
 use App\Filament\Clusters\Periods\Resources\PeriodBimonthlyResource\Pages;
 use App\Filament\Clusters\Periods\Resources\PeriodBimonthlyResource\RelationManagers;
+use App\Filament\Resources\SchoolResource;
 use App\Http\Middleware\CheckSchoolCookieForPages;
 use App\Http\Middleware\RequireSchoolCookie;
 use App\Models\PeriodBimonthly;
@@ -32,9 +33,20 @@ class PeriodBimonthlyResource extends Resource
 
     public static SubNavigationPosition $subNavigationPosition = SubNavigationPosition::Top;
 
+
     public static function getModelLabel(): string
     {
         return __('Bimonthly');
+    }
+
+    public static function getSchoolId(): int
+    {
+        return SchoolResource::getSchoolId();
+    }
+
+    public static function getSchoolYearId(): int
+    {
+        return SchoolResource::getSchoolYearId();
     }
 
     public static function canAccess(): bool
@@ -56,7 +68,10 @@ class PeriodBimonthlyResource extends Resource
             return false;
         }
 
-        $periodSchoolYear = PeriodSchoolYear::where('type', 'Bimestral')->where('school_year_id', request()->cookie('SHYID'))->first();
+        $periodSchoolYear = PeriodSchoolYear::where('type', 'Bimestral')->where('school_year_id', self::getSchoolYearId())->where(
+            'school_id',
+            self::getSchoolId()
+        )->first();
         if (!$periodSchoolYear) {
             return false;
         }
@@ -102,9 +117,9 @@ class PeriodBimonthlyResource extends Resource
                     ->label('Status'),
 
                 Select::make('period_school_years_id')
-                    ->options(PeriodSchoolYear::where('school_year_id', request()->cookie('SHYID'))
-                        ->where('school_id', School::where('code', request()->cookie('SHID'))->first()->id)
-                        ->where('school_year_id', request()->cookie('SHYID'))
+                    ->options(PeriodSchoolYear::where('school_year_id', self::getSchoolYearId())
+                        ->where('school_id', self::getSchoolId())
+                        ->where('school_year_id', self::getSchoolYearId())
                         ->get()
                         ->pluck('type', 'id'))
                     ->native(false)
@@ -140,8 +155,11 @@ class PeriodBimonthlyResource extends Resource
     {
         return PeriodBimonthly::query()
             ->whereHas('periodSchoolYear', function (Builder $query) {
-                $query->where('school_year_id', request()->cookie('SHYID'))
-                    ->where('school_id', School::where('code', request()->cookie('SHID'))->first()->id);
+                $query->where('school_year_id', self::getSchoolYearId())
+                    ->where(
+                        'school_id',
+                        self::getSchoolId()
+                    );
             })
             ->withoutGlobalScope(SoftDeletingScope::class);
     }
