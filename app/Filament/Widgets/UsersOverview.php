@@ -8,13 +8,16 @@ use Filament\Widgets\StatsOverviewWidget\Stat;
 
 class UsersOverview extends BaseWidget
 {
+    protected static ?string $pollingInterval = '5s';
+
     protected function getStats(): array
     {
         return [
             Stat::make(__('Total Users'), User::query()->count())
                 ->description(
                     __('The total number of users in the system.')
-                ),
+                )
+                ->descriptionIcon('heroicon-o-users'),
         ];
     }
 
