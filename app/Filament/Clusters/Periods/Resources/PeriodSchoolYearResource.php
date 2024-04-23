@@ -16,6 +16,7 @@ use Filament\Pages\SubNavigationPosition;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
+use Filament\Notifications\Notification;
 
 class PeriodSchoolYearResource extends Resource
 {
@@ -174,7 +175,27 @@ class PeriodSchoolYearResource extends Resource
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
-                Tables\Actions\DeleteAction::make(),
+                Tables\Actions\DeleteAction::make()
+                ->action(
+                    function ($data, $record) {
+                        if ($record->bimesters->count() > 0 || $record->semesters->count()) {
+                            Notification::make()
+                                ->danger()
+                                ->title(__('Não é possível excluir'))
+                                ->body(__('Existem vinculos cadastrados'))
+                                ->send();
+
+                            return;
+                        }
+
+                        $record->delete();
+
+                        Notification::make()
+                            ->success()
+                            ->title(__('Período excluído'))
+                            ->send();
+                    }
+                ),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([

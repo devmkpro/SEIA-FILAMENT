@@ -25,4 +25,14 @@ class PeriodSchoolYear extends Model
     {
         return $this->belongsTo(School::class, 'school_id');
     }
+
+    public function bimesters()
+    {
+        return $this->hasMany(PeriodBimonthly::class, 'period_school_years_id');
+    }
+
+    public function semesters()
+    {
+        return $this->hasMany(PeriodSemester::class,   'period_school_years_id');
+    }
 }

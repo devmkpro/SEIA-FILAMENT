@@ -68,10 +68,10 @@ class PeriodBimonthlyResource extends Resource
             return false;
         }
 
-        $periodSchoolYear = PeriodSchoolYear::where('type', 'Bimestral')->where('school_year_id', self::getSchoolYearId())->where(
-            'school_id',
-            self::getSchoolId()
-        )->first();
+        $periodSchoolYear = PeriodSchoolYear::where('type', 'Bimestral')->where('school_year_id', self::getSchoolYearId())
+        ->where('school_id',self::getSchoolId())
+        ->first();
+
         if (!$periodSchoolYear) {
             return false;
         }
@@ -172,6 +172,7 @@ class PeriodBimonthlyResource extends Resource
                 Tables\Columns\TextColumn::make('active'),
                 Tables\Columns\TextColumn::make('bimester'),
                 Tables\Columns\TextColumn::make('periodSchoolYear.type')
+                    ->label(__('period_school'))
                     ->sortable(),
                 Tables\Columns\TextColumn::make('start_date')
                     ->dateTime('d/m/Y')

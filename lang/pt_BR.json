@@ -193,5 +193,8 @@
     "Bimonthly": "Bimestre",
     "Period": "Período",
     "Period school years id": "Período do Ano Letivo",
-    "Bimester": "Bimestre"
+    "Bimester": "Bimestre",
+    "Semester": "Semestre",
+    "Period school": "Período Escolar",
+    "period_school": "Período Escolar"
 }
