@@ -169,6 +169,7 @@ class PeriodBimonthlyResource extends Resource
         return $table
             ->query(self::queryTable())
             ->columns([
+                Tables\Columns\TextColumn::make('id')->label(__('code')),
                 Tables\Columns\TextColumn::make('active'),
                 Tables\Columns\TextColumn::make('bimester'),
                 Tables\Columns\TextColumn::make('periodSchoolYear.type')
