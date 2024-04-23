@@ -13,7 +13,7 @@ class RegionsSeed extends Seeder
 
     public function __construct()
     {
-        $this->BASE_URL = 'https://servicodados.ibge.gov.br/api/v1/localidades';
+        $this->BASE_URL = 'https://raw.githubusercontent.com/devmkpro/localidades-ibge/main';
     }
 
     /**
@@ -33,13 +33,16 @@ class RegionsSeed extends Seeder
 
     protected function getStates(int $limit = null): array
     {
-        $response = json_decode(file_get_contents($this->BASE_URL . '/estados'), true);
+        $response = json_decode(file_get_contents($this->BASE_URL . '/estados.json'), true);
         return $limit ? array_slice($response, 0, $limit) : $response;
     }
 
     protected function getCities(string $uf): array
     {
-        $response = json_decode(file_get_contents($this->BASE_URL . "/estados/{$uf}/municipios"), true);
+        $response = json_decode(file_get_contents($this->BASE_URL . "/municipios.json"), true);
+        $response = array_filter($response, function ($city) use ($uf) {
+            return $city['microrregiao']['mesorregiao']['UF']['sigla'] === $uf;
+        });
         return $response;
     }
 

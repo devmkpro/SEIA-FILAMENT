@@ -29,7 +29,6 @@ class SchoolFactory extends Factory
             'landline' => $this->faker->numerify('(##) ####-####'),
             'cnpj' => $this->faker->numerify('##.###.###/####-##'),
             'complement' => $this->faker->word,
-            'acronym' => $this->faker->word,
             'city_id' => \App\Models\City::first()->id,
         ];
     }
