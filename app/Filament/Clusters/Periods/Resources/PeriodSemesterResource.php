@@ -144,6 +144,7 @@ class PeriodSemesterResource extends Resource
     {
         return $table
             ->columns([
+                Tables\Columns\TextColumn::make('id')->label(__('code')),
                 Tables\Columns\TextColumn::make('active'),
                 Tables\Columns\TextColumn::make('periodSchoolYear.type')
                 ->label(__('period_school'))

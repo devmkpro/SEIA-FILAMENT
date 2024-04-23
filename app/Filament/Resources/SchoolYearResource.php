@@ -10,6 +10,7 @@ use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
+use Filament\Notifications\Notification;
 
 class SchoolYearResource extends Resource
 {
@@ -72,7 +73,28 @@ class SchoolYearResource extends Resource
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
-                Tables\Actions\DeleteAction::make(),
+                Tables\Actions\DeleteAction::make()
+                ->action(
+                    function ($data, $record) {
+                        if ($record->periods->count() > 0){
+                            Notification::make()
+                                ->danger()
+                                ->title(__('Não é possível excluir'))
+                                ->body(__('Existem períodos vinculados'))
+                                ->send();
+
+                            return;
+
+                        }
+
+                        $record->delete();
+
+                        Notification::make()
+                            ->success()
+                            ->title(__('Ano letivo excluído'))
+                            ->send();
+                    }  
+                ),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([

@@ -25,4 +25,9 @@ class SchoolYear extends Model
     {
         return $value === 'Ativa' ? 'Ativa' : 'Inativa';
     }
+
+    public function periods()
+    {
+        return $this->hasMany(PeriodSchoolYear::class, 'school_year_id', 'id');
+    }
 }
