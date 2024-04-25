@@ -20,6 +20,7 @@ use App\Http\Middleware\RequireSchoolCookie;
 use App\Models\PeriodSchoolYear;
 use App\Filament\Resources\SchoolResource;
 use Filament\Forms\Components\Select;
+use Filament\Tables\Enums\ActionsPosition;
 
 class PeriodSemesterResource extends Resource
 {
@@ -89,7 +90,6 @@ class PeriodSemesterResource extends Resource
     {
         return $form
             ->schema([
-                SchoolResource::makeActiveTableColumn(),
 
                 Select::make('period_school_years_id')
                     ->options(PeriodSchoolYear::where('school_year_id', self::getSchoolYearId())
@@ -130,8 +130,9 @@ class PeriodSemesterResource extends Resource
     {
         return $table
             ->columns([
+                SchoolResource::makeActiveTableColumn(),
+
                 Tables\Columns\TextColumn::make('id')->label(__('code')),
-                Tables\Columns\TextColumn::make('active'),
                 Tables\Columns\TextColumn::make('periodSchoolYear.type')
                 ->label(__('period_school'))
                 ->sortable(),
@@ -157,10 +158,10 @@ class PeriodSemesterResource extends Resource
             ->filters([
                 //
             ])
-            ->actions([
+              ->actions([
                 Tables\Actions\EditAction::make(),
                 Tables\Actions\DeleteAction::make(),
-            ])
+            ], position: ActionsPosition::BeforeColumns)
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),

@@ -99,8 +99,6 @@ class PeriodBimonthlyResource extends Resource
     {
         return $form
             ->schema([
-                SchoolResource::makeActiveTableColumn(),
-
                 Select::make('period_school_years_id')
                     ->options(PeriodSchoolYear::where('school_year_id', self::getSchoolYearId())
                         ->where('school_id', self::getSchoolId())
