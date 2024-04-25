@@ -11,10 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('school_diaries', function (Blueprint $table) {
+        Schema::create('semester_school_diaries', function (Blueprint $table) {
             $table->id();
-            $table->enum('active', ['Ativa', 'Inativa'])->default('Ativa');
-            $table->foreignId('school_id')->constrained();
+            $table->foreignId('school_diary_id')->constrained()->onDelete('cascade');
+            $table->foreignId('period_semesters_id')->constrained()->onDelete('cascade');
             $table->timestamps();
         });
     }
@@ -24,6 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('school_diaries');
+        Schema::dropIfExists('semester_school_diaries');
     }
 };

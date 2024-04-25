@@ -199,5 +199,9 @@
     "period_school": "Período Escolar",
     "code": "Código",
     "School Diary": "Diário de Turma",
-    "Period school year" : "Período do Ano Letivo"
+    "Period school year" : "Período do Ano Letivo",
+    "School Diary created successfully": "Diário de Turma criado com sucesso",
+    "School Diary deleted successfully": "Diário de Turma deletado com sucesso",
+    "Bi-monthly created successfully": "Bimestre criado com sucesso",
+    "Semester created successfully": "Semestre criado com sucesso"
 }

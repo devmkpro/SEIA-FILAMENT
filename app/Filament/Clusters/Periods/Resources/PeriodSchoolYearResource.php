@@ -144,7 +144,7 @@ class PeriodSchoolYearResource extends Resource
 
     private static function hasRelationships($record): bool
     {
-        return $record->bimesters->count() > 0 || $record->semesters->count() > 0 || $record->diaries->count() > 0;
+        return $record->bimesters->count() > 0 || $record->semesters->count() > 0;
     }
 
     private static function getTableQuery()
@@ -208,7 +208,7 @@ class PeriodSchoolYearResource extends Resource
                         }
                     )
                     ->action(
-                        function ($data, $record) {
+                        function ($record) {
                             if (self::hasRelationships($record)) {
                                 Notification::make()
                                     ->danger()
@@ -217,16 +217,18 @@ class PeriodSchoolYearResource extends Resource
                                     ->send();
 
                                 return;
+                            } else {
+                                $record->delete();
+
+                                Notification::make()
+                                    ->success()
+                                    ->title(__('Período excluído'))
+                                    ->send();
+    
+                                Redirect::back();
                             }
 
-                            $record->delete();
-
-                            Notification::make()
-                                ->success()
-                                ->title(__('Período excluído'))
-                                ->send();
-
-                            Redirect::back();
+                           
                         }
                     ),
 

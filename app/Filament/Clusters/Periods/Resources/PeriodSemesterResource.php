@@ -4,7 +4,6 @@ namespace App\Filament\Clusters\Periods\Resources;
 
 use App\Filament\Clusters\Periods;
 use App\Filament\Clusters\Periods\Resources\PeriodSemesterResource\Pages;
-use App\Filament\Clusters\Periods\Resources\PeriodSemesterResource\RelationManagers;
 use App\Filament\Clusters\Periods\Resources\utils\SchoolPermissionAccess;
 use App\Models\PeriodSemester;
 use Filament\Forms;
@@ -12,11 +11,7 @@ use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Filament\Pages\SubNavigationPosition;
-use App\Http\Middleware\CheckSchoolCookieForPages;
-use App\Http\Middleware\RequireSchoolCookie;
 use App\Models\PeriodSchoolYear;
 use App\Filament\Resources\SchoolResource;
 use Filament\Forms\Components\Select;
@@ -54,7 +49,7 @@ class PeriodSemesterResource extends Resource
         if (!$isValid) {
             return false;
         }
-        
+
         $periodSchoolYear = PeriodSchoolYear::where('type', 'Semestral')->where('school_year_id', self::getSchoolYearId())->where(
             'school_id',
             self::getSchoolId()
@@ -79,7 +74,7 @@ class PeriodSemesterResource extends Resource
             $semester = $periodSemester->semester;
             if ($semester == '1º Semestre') {
                 return ['2º Semestre' => '2º Semestre'];
-            } 
+            }
         } else {
             return ['1º Semestre' => '1º Semestre'];
         }
@@ -90,7 +85,14 @@ class PeriodSemesterResource extends Resource
     {
         return $form
             ->schema([
-
+                Forms\Components\Select::make('active')
+                    ->options([
+                        'Ativa' => 'Ativa',
+                        'Inativa' => 'Inativa',
+                    ])
+                    ->default('Ativa')
+                    ->native(false)
+                    ->required(),
                 Select::make('period_school_years_id')
                     ->options(PeriodSchoolYear::where('school_year_id', self::getSchoolYearId())
                         ->where('school_id', self::getSchoolId())
@@ -104,11 +106,11 @@ class PeriodSemesterResource extends Resource
                             $set('semester', null);
                         }
                     )
-                ->disabled(fn ($operation) => $operation === 'edit')
-                ->required(),
+                    ->disabled(fn ($operation) => $operation === 'edit')
+                    ->required(),
 
                 Forms\Components\DatePicker::make('start_date')
-                ->required(),
+                    ->required(),
                 Forms\Components\DatePicker::make('end_date')
                     ->after('start_date')
                     ->required(),
@@ -134,8 +136,8 @@ class PeriodSemesterResource extends Resource
 
                 Tables\Columns\TextColumn::make('id')->label(__('code')),
                 Tables\Columns\TextColumn::make('periodSchoolYear.type')
-                ->label(__('period_school'))
-                ->sortable(),
+                    ->label(__('period_school'))
+                    ->sortable(),
 
                 Tables\Columns\TextColumn::make('start_date')
                     ->dateTime('d/m/Y')
@@ -158,9 +160,15 @@ class PeriodSemesterResource extends Resource
             ->filters([
                 //
             ])
-              ->actions([
+            ->actions([
                 Tables\Actions\EditAction::make(),
-                Tables\Actions\DeleteAction::make(),
+                Tables\Actions\DeleteAction::make()
+                ->action(
+                    function ($record) {
+                        $record->semesterDiary->schoolDiary->delete();
+                        $record->delete();
+                    }
+                ),
             ], position: ActionsPosition::BeforeColumns)
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([

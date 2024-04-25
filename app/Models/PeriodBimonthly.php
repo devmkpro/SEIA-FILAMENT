@@ -21,4 +21,9 @@ class PeriodBimonthly extends Model
     {
         return $this->belongsTo(PeriodSchoolYear::class, 'period_school_years_id');
     }
+
+    public function bimesterDiary()
+    {
+        return $this->hasOne(BimesterSchoolDiary::class, 'period_bimonthlies_id');
+    }
 }

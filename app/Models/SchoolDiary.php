@@ -9,15 +9,24 @@ class SchoolDiary extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['active', 'school_id', 'period_school_years_id'];
+    protected $fillable = ['active', 'school_id'];
+
 
     public function school()
     {
         return $this->belongsTo(School::class, 'school_id');
     }
 
-    public function periodSchoolYear()
+
+    public function bimester()
     {
-        return $this->belongsTo(PeriodSchoolYear::class, 'period_school_years_id');
+        return $this->belongsToMany(PeriodBimonthly::class, 'bimester_school_diaries', 'school_diary_id', 'period_bimonthlies_id');
     }
+
+    public function semester()
+    {
+        return $this->belongsToMany(PeriodSemester::class, 'semester_school_diaries', 'school_diary_id', 'period_semesters_id');
+    }
+
+
 }

@@ -99,6 +99,14 @@ class PeriodBimonthlyResource extends Resource
     {
         return $form
             ->schema([
+                Forms\Components\Select::make('active')
+                    ->options([
+                        'Ativa' => 'Ativa',
+                        'Inativa' => 'Inativa',
+                    ])
+                    ->default('Ativa')
+                    ->native(false)
+                    ->required(),
                 Select::make('period_school_years_id')
                     ->options(PeriodSchoolYear::where('school_year_id', self::getSchoolYearId())
                         ->where('school_id', self::getSchoolId())
@@ -171,9 +179,18 @@ class PeriodBimonthlyResource extends Resource
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
-                Tables\Actions\DeleteAction::make(),
+                Tables\Actions\DeleteAction::make()
+                ->action(
+                    function ($record) {
+                        $record->bimesterDiary->schoolDiary->delete();
+                        $record->delete();
+                    }
+                ),
             ], position: ActionsPosition::BeforeColumns)
             ->bulkActions([
+                Tables\Actions\BulkActionGroup::make([
+                    Tables\Actions\DeleteBulkAction::make(),
+                ]),
             ]);
     }
 

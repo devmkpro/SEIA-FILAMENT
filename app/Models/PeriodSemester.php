@@ -21,4 +21,9 @@ class PeriodSemester extends Model
     {
         return $this->belongsTo(PeriodSchoolYear::class, 'period_school_years_id');
     }
+
+    public function semesterDiary()
+    {
+        return $this->hasOne(SemesterSchoolDiary::class, 'period_semesters_id');
+    }
 }

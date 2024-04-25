@@ -36,8 +36,4 @@ class PeriodSchoolYear extends Model
         return $this->hasMany(PeriodSemester::class,   'period_school_years_id');
     }
 
-    public function diaries()
-    {
-        return $this->hasMany(SchoolDiary::class, 'period_school_years_id', 'id');
-    }
 }
