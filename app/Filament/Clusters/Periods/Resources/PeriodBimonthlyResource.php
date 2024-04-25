@@ -18,6 +18,7 @@ use Filament\Forms\Form;
 use Filament\Pages\SubNavigationPosition;
 use Filament\Resources\Resource;
 use Filament\Tables;
+use Filament\Tables\Enums\ActionsPosition;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
@@ -98,14 +99,7 @@ class PeriodBimonthlyResource extends Resource
     {
         return $form
             ->schema([
-                Select::make('active')
-                    ->options([
-                        'Ativa' => 'Ativa',
-                        'Inativa' => 'Inativa',
-                    ])
-                    ->native(false)
-                    ->default('Ativa')
-                    ->label('Status'),
+                SchoolResource::makeActiveTableColumn(),
 
                 Select::make('period_school_years_id')
                     ->options(PeriodSchoolYear::where('school_year_id', self::getSchoolYearId())
@@ -160,8 +154,9 @@ class PeriodBimonthlyResource extends Resource
         return $table
             ->query(self::queryTable())
             ->columns([
-                Tables\Columns\TextColumn::make('id')->label(__('code')),
                 SchoolResource::makeActiveTableColumn(),
+
+                Tables\Columns\TextColumn::make('id')->label(__('code')),
                 Tables\Columns\TextColumn::make('bimester'),
                 Tables\Columns\TextColumn::make('periodSchoolYear.type')
                     ->label(__('period_school'))
@@ -172,10 +167,6 @@ class PeriodBimonthlyResource extends Resource
                 Tables\Columns\TextColumn::make('end_date')
                     ->dateTime('d/m/Y')
                     ->sortable(),
-                Tables\Columns\TextColumn::make('created_at')
-                    ->dateTime('d/m/Y')
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
                 //
@@ -183,11 +174,8 @@ class PeriodBimonthlyResource extends Resource
             ->actions([
                 Tables\Actions\EditAction::make(),
                 Tables\Actions\DeleteAction::make(),
-            ])
+            ], position: ActionsPosition::BeforeColumns)
             ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
-                ]),
             ]);
     }
 

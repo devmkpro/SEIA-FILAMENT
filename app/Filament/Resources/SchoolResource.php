@@ -55,58 +55,6 @@ class SchoolResource extends Resource
         });
     }
 
-    public static function form(Form $form): Form
-    {
-        return $form
-            ->schema(
-                [
-                    Section::make(
-                        [
-                            self::makeActiveSelect(),
-                            self::makeTypeSelect(),
-                            self::makeCategorySelect(),
-                            Forms\Components\TextInput::make('name')
-                                ->placeholder('Nome da escola')
-                                ->required()
-                                ->maxLength(200),
-                            Forms\Components\TextInput::make('email')
-                                ->email()
-                                ->required()
-                                ->maxLength(200),
-                            Forms\Components\TextInput::make('address')
-                                ->required()
-                                ->maxLength(200),
-                            Forms\Components\TextInput::make('zip_code')
-                                ->required()
-                                ->mask('99999-999')
-                                ->maxLength(20),
-                            Forms\Components\TextInput::make('phone')
-                                ->tel()
-                                ->required()
-                                ->maxLength(20)
-                                ->mask('(99) 99999-9999'),
-                            Forms\Components\TextInput::make('neighborhood')
-                                ->maxLength(200),
-                            Forms\Components\TextInput::make('landline')
-                                ->tel()
-                                ->mask('(99) 9999-9999')
-                                ->maxLength(200),
-                            Forms\Components\TextInput::make('cnpj')
-                                ->mask('99.999.999/9999-99'),
-                            Forms\Components\TextInput::make('complement')
-                                ->maxLength(200),
-                            Forms\Components\TextInput::make('acronym')
-                                ->maxLength(10)
-                                ->columnSpan(2),
-                        ]
-                    )->columnSpan(2)
-                        ->icon('heroicon-o-academic-cap')
-                        ->description('Informações Gerais'),
-                    self::makeLocationSection(),
-                ]
-            )->columns(3);
-    }
-
     private static function makeActiveSelect(): Select
     {
         return Select::make('active')
@@ -182,6 +130,58 @@ class SchoolResource extends Resource
         ->sortable()
         ->badge(fn ($record) => $record->active ? 'success' : 'danger')
         ->color(fn ($record) => $record->active === 'Ativa' ? 'success' : 'danger');
+    }
+
+    public static function form(Form $form): Form
+    {
+        return $form
+            ->schema(
+                [
+                    Section::make(
+                        [
+                            self::makeActiveSelect(),
+                            self::makeTypeSelect(),
+                            self::makeCategorySelect(),
+                            Forms\Components\TextInput::make('name')
+                                ->placeholder('Nome da escola')
+                                ->required()
+                                ->maxLength(200),
+                            Forms\Components\TextInput::make('email')
+                                ->email()
+                                ->required()
+                                ->maxLength(200),
+                            Forms\Components\TextInput::make('address')
+                                ->required()
+                                ->maxLength(200),
+                            Forms\Components\TextInput::make('zip_code')
+                                ->required()
+                                ->mask('99999-999')
+                                ->maxLength(20),
+                            Forms\Components\TextInput::make('phone')
+                                ->tel()
+                                ->required()
+                                ->maxLength(20)
+                                ->mask('(99) 99999-9999'),
+                            Forms\Components\TextInput::make('neighborhood')
+                                ->maxLength(200),
+                            Forms\Components\TextInput::make('landline')
+                                ->tel()
+                                ->mask('(99) 9999-9999')
+                                ->maxLength(200),
+                            Forms\Components\TextInput::make('cnpj')
+                                ->mask('99.999.999/9999-99'),
+                            Forms\Components\TextInput::make('complement')
+                                ->maxLength(200),
+                            Forms\Components\TextInput::make('acronym')
+                                ->maxLength(10)
+                                ->columnSpan(2),
+                        ]
+                    )->columnSpan(2)
+                        ->icon('heroicon-o-academic-cap')
+                        ->description('Informações Gerais'),
+                    self::makeLocationSection(),
+                ]
+            )->columns(3);
     }
 
     public static function table(Table $table): Table

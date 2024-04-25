@@ -12,12 +12,14 @@ use App\Models\SchoolYear;
 use Closure;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Form;
+use Filament\Notifications\Notification;
 use Filament\Pages\SubNavigationPosition;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Filament\Tables\Actions\Action;
 use Filament\Tables\Enums\ActionsPosition;
+use Illuminate\Support\Facades\Redirect;
 
 class SchoolDiaryResource extends Resource
 {
@@ -82,17 +84,25 @@ class SchoolDiaryResource extends Resource
         return function () {
             return function (string $attribute, $value, Closure $fail) {
                 $schoolYear = SchoolYear::find(self::getSchoolYearId());
-                if (!$schoolYear->periods()->where('active', 'Ativa')->first()) {
-                    $fail(__('Não existe um período ativo para este ano letivo.'));
+                
+                if (!$schoolYear->periods()->where('active', 'Ativa')
+                ->where('id', $value)
+                ->first()) {
+                    $fail(__('Este período do ano não está aberto.'));
                 } else if (SchoolDiary::where('school_id', self::getSchoolId())
-                    ->where('period_school_years_id', $schoolYear->periods()->where('active', 'Ativa')->first()->id)
+                    ->where('period_school_years_id', $value)
                     ->where('active', 'Ativa')
                     ->exists()
                 ) {
-                    $fail(__('Já existe um diário ativo para este período do ano.'));
+                    $fail(__('Já existe um diário aberto para este período do ano.'));
                 }
             };
         };
+    }
+
+    private static function hasRelationships($record): bool
+    {
+        return $record->periodSchoolYear->active == 'Ativa';
     }
 
     public static function table(Table $table): Table
@@ -116,6 +126,34 @@ class SchoolDiaryResource extends Resource
             ])
             ->actions([
                 self::makeActionInactive(),
+                Tables\Actions\DeleteAction::make()
+                ->visible(
+                    function ($record) {
+                        return $record->active == 'Inativa' && !self::hasRelationships($record);
+                    }
+                )
+                ->action(
+                    function ($data, $record) {
+                        if (self::hasRelationships($record)) {
+                            Notification::make()
+                                ->danger()
+                                ->title(__('Não é possível excluir'))
+                                ->body(__('Existem vínculos cadastrados'))
+                                ->send();
+
+                            return;
+                        }
+
+                        $record->delete();
+
+                        Notification::make()
+                            ->success()
+                            ->title(__('Período excluído'))
+                            ->send();
+
+                        Redirect::back();
+                    }
+                ),
             ], position: ActionsPosition::BeforeColumns)
             ->bulkActions([]);
     }
@@ -148,10 +186,7 @@ class SchoolDiaryResource extends Resource
             ])
             ->native(false)
             ->default('Ativa')
-            ->label('Status')
-            ->rules([
-                self::validateActive(),
-            ]);
+            ->label('Status');
     }
 
     private static function makeSchoolIdSelectable(): Select
@@ -172,7 +207,10 @@ class SchoolDiaryResource extends Resource
                 \App\Models\PeriodSchoolYear::where('school_year_id', self::getSchoolYearId())->pluck('type', 'id')
             )
             ->searchable()
-            ->required();
+            ->required()
+            ->rules([
+                self::validateActive(),
+            ]);
     }
 
 

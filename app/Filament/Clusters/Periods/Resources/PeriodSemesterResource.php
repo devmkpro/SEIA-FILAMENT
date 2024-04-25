@@ -89,14 +89,8 @@ class PeriodSemesterResource extends Resource
     {
         return $form
             ->schema([
-                Select::make('active')
-                ->options([
-                    'Ativa' => 'Ativa',
-                    'Inativa' => 'Inativa',
-                ])
-                ->native(false)
-                ->default('Ativa')
-                ->label('Status'),
+                SchoolResource::makeActiveTableColumn(),
+
                 Select::make('period_school_years_id')
                     ->options(PeriodSchoolYear::where('school_year_id', self::getSchoolYearId())
                         ->where('school_id', self::getSchoolId())

@@ -147,19 +147,42 @@ class PeriodSchoolYearResource extends Resource
         return $record->bimesters->count() > 0 || $record->semesters->count() > 0 || $record->diaries->count() > 0;
     }
 
+    private static function getTableQuery()
+    {
+        return PeriodSchoolYear::where('school_id', School::where('code', request()->cookie('SHID'))->first()->id)
+            ->where('school_year_id', request()->cookie('SHYID'));
+    }
+
+    private static function makeToggleActiveAction()
+    {
+        return Action::make('toggle-active')
+            ->label(
+                fn ($record) => $record->active == 'Ativa' ? 'Fechar' : 'Abrir'
+            )
+            ->icon(
+                fn ($record) => $record->active == 'Ativa' ? 'heroicon-o-x-circle' : 'heroicon-o-check-circle'
+            )
+            ->color(
+                fn ($record) => $record->active == 'Ativa' ? 'danger' : 'success'
+            )
+            ->action(function (array $data, $record) {
+                $record->update([
+                    'active' => $record->active == 'Ativa' ? 'Inativa' : 'Ativa',
+                ]);
+            });
+    }
+
     public static function table(Table $table): Table
     {
         return $table
-            ->query(
-                PeriodSchoolYear::where('school_id', School::where('code', request()->cookie('SHID'))->first()->id)
-                    ->where('school_year_id', request()->cookie('SHYID'))
-            )
+            ->query(self::getTableQuery())
             ->columns([
+                SchoolResource::makeActiveTableColumn(),
+
                 Tables\Columns\TextColumn::make('id')
                     ->label(__('code'))
                     ->sortable()
                     ->searchable(),
-                SchoolResource::makeActiveTableColumn(),
                 Tables\Columns\TextColumn::make('schoolYear.school_year')
                     ->sortable(),
                 Tables\Columns\TextColumn::make('type')
@@ -177,28 +200,14 @@ class PeriodSchoolYearResource extends Resource
                 //
             ])
             ->actions([
-                Action::make('toggle-active')
-                    ->label(
-                        fn ($record) => $record->active == 'Ativa' ? 'Fechar' : 'Abrir'
-                    )
-                    ->icon(
-                        fn ($record) => $record->active == 'Ativa' ? 'heroicon-o-x-circle' : 'heroicon-o-check-circle'
-                    )
-                    ->color(
-                        fn ($record) => $record->active == 'Ativa' ? 'danger' : 'success'
-                    )
-                    ->action(function (array $data, $record) {
-                        $record->update([
-                            'active' => $record->active == 'Ativa' ? 'Inativa' : 'Ativa',
-                        ]);
-                    }),
+                self::makeToggleActiveAction(),
                 Tables\Actions\DeleteAction::make()
                     ->visible(
                         function ($record) {
                             return $record->active == 'Inativa' && !self::hasRelationships($record);
                         }
                     )
-                    ->action( 
+                    ->action(
                         function ($data, $record) {
                             if (self::hasRelationships($record)) {
                                 Notification::make()
@@ -216,7 +225,7 @@ class PeriodSchoolYearResource extends Resource
                                 ->success()
                                 ->title(__('Período excluído'))
                                 ->send();
-                            
+
                             Redirect::back();
                         }
                     ),
