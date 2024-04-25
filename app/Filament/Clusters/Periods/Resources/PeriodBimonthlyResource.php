@@ -4,7 +4,7 @@ namespace App\Filament\Clusters\Periods\Resources;
 
 use App\Filament\Clusters\Periods;
 use App\Filament\Clusters\Periods\Resources\PeriodBimonthlyResource\Pages;
-use App\Filament\Clusters\Periods\Resources\PeriodBimonthlyResource\RelationManagers;
+use App\Filament\Clusters\Periods\Resources\utils\SchoolPermissionAccess;
 use App\Filament\Resources\SchoolResource;
 use App\Http\Middleware\CheckSchoolCookieForPages;
 use App\Http\Middleware\RequireSchoolCookie;
@@ -52,18 +52,7 @@ class PeriodBimonthlyResource extends Resource
     public static function canAccess(): bool
     {
 
-        $isValid = (new RequireSchoolCookie())->handle(request(), function ($request) {
-            return false;
-        });
-
-        if (!$isValid) {
-            return false;
-        }
-
-        $isValid = (new CheckSchoolCookieForPages())->handle(request(), function ($request) {
-            return false;
-        });
-
+        $isValid = (new SchoolPermissionAccess())->canAccess();
         if (!$isValid) {
             return false;
         }
@@ -78,6 +67,8 @@ class PeriodBimonthlyResource extends Resource
 
         return true;
     }
+
+    //hasRelationships
 
     private static function getBimesterOptions($periodSchoolYear)
     {
@@ -170,7 +161,7 @@ class PeriodBimonthlyResource extends Resource
             ->query(self::queryTable())
             ->columns([
                 Tables\Columns\TextColumn::make('id')->label(__('code')),
-                Tables\Columns\TextColumn::make('active'),
+                SchoolResource::makeActiveTableColumn(),
                 Tables\Columns\TextColumn::make('bimester'),
                 Tables\Columns\TextColumn::make('periodSchoolYear.type')
                     ->label(__('period_school'))

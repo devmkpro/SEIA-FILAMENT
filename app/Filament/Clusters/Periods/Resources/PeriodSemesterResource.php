@@ -5,6 +5,7 @@ namespace App\Filament\Clusters\Periods\Resources;
 use App\Filament\Clusters\Periods;
 use App\Filament\Clusters\Periods\Resources\PeriodSemesterResource\Pages;
 use App\Filament\Clusters\Periods\Resources\PeriodSemesterResource\RelationManagers;
+use App\Filament\Clusters\Periods\Resources\utils\SchoolPermissionAccess;
 use App\Models\PeriodSemester;
 use Filament\Forms;
 use Filament\Forms\Form;
@@ -48,22 +49,11 @@ class PeriodSemesterResource extends Resource
     public static function canAccess(): bool
     {
 
-        $isValid = (new RequireSchoolCookie())->handle(request(), function ($request) {
-            return false;
-        });
-
+        $isValid = (new SchoolPermissionAccess())->canAccess();
         if (!$isValid) {
             return false;
         }
-
-        $isValid = (new CheckSchoolCookieForPages())->handle(request(), function ($request) {
-            return false;
-        });
-
-        if (!$isValid) {
-            return false;
-        }
-
+        
         $periodSchoolYear = PeriodSchoolYear::where('type', 'Semestral')->where('school_year_id', self::getSchoolYearId())->where(
             'school_id',
             self::getSchoolId()
@@ -74,6 +64,8 @@ class PeriodSemesterResource extends Resource
 
         return true;
     }
+
+    //hasRelationships
 
     private static function getSemesterOptions($periodSchoolYear)
     {

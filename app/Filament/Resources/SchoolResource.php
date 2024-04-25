@@ -174,6 +174,16 @@ class SchoolResource extends Resource
             ->description('Localização');
     }
 
+    public static function makeActiveTableColumn()
+    {
+        return Tables\Columns\TextColumn::make('active')
+        ->label('Status')
+        ->searchable()
+        ->sortable()
+        ->badge(fn ($record) => $record->active ? 'success' : 'danger')
+        ->color(fn ($record) => $record->active === 'Ativa' ? 'success' : 'danger');
+    }
+
     public static function table(Table $table): Table
     {
         return $table
@@ -182,12 +192,8 @@ class SchoolResource extends Resource
                     Tables\Columns\TextColumn::make('code')
                         ->sortable()
                         ->searchable(),
-                    Tables\Columns\TextColumn::make('active')
-                        ->label('Status')
-                        ->searchable()
-                        ->sortable()
-                        ->badge(fn ($record) => $record->active ? 'success' : 'danger')
-                        ->color(fn ($record) => $record->active === 'Ativa' ? 'success' : 'danger'),
+                        
+                    self::makeActiveTableColumn(),
 
                     Tables\Columns\TextColumn::make('name')
                         ->searchable(),

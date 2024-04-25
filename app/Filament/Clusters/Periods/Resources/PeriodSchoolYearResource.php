@@ -4,8 +4,8 @@ namespace App\Filament\Clusters\Periods\Resources;
 
 use App\Filament\Clusters\Periods;
 use App\Filament\Clusters\Periods\Resources\PeriodSchoolYearResource\Pages;
-use App\Http\Middleware\CheckSchoolCookieForPages;
-use App\Http\Middleware\RequireSchoolCookie;
+use App\Filament\Clusters\Periods\Resources\utils\SchoolPermissionAccess;
+use App\Filament\Resources\SchoolResource;
 use App\Models\PeriodSchoolYear;
 use App\Models\School;
 use App\Models\SchoolYear;
@@ -17,6 +17,9 @@ use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Filament\Notifications\Notification;
+use Filament\Tables\Enums\ActionsPosition;
+use Filament\Tables\Actions\Action;
+use Illuminate\Support\Facades\Redirect;
 
 class PeriodSchoolYearResource extends Resource
 {
@@ -35,19 +38,7 @@ class PeriodSchoolYearResource extends Resource
 
     public static function canAccess(): bool
     {
-
-        $isValid = (new RequireSchoolCookie())->handle(request(), function ($request) {
-            return false;
-        });
-
-        if (!$isValid) {
-            return false;
-        }
-
-        $isValid = (new CheckSchoolCookieForPages())->handle(request(), function ($request) {
-            return false;
-        });
-
+        $isValid = (new SchoolPermissionAccess())->canAccess();
         if (!$isValid) {
             return false;
         }
@@ -80,9 +71,11 @@ class PeriodSchoolYearResource extends Resource
             ->native(false)
             ->default(self::getDefaultActiveValue())
             ->label('Status')
-            ->rules([
-                self::validateActive(),
-            ]);
+            ->rules(
+                [
+                    self::validateActive()
+                ]
+            );
     }
 
     private static function getDefaultActiveValue(): string
@@ -98,7 +91,8 @@ class PeriodSchoolYearResource extends Resource
         return function () {
             return function (string $attribute, $value, Closure $fail) {
                 $school = School::where('code', request()->cookie('SHID'))->first();
-                if (PeriodSchoolYear::where('school_year_id', $school->id)
+                if (
+                    PeriodSchoolYear::where('school_year_id', $school->id)
                     ->where('school_id', $school->id)
                     ->where('active', 'Ativa')
                     ->exists()
@@ -148,6 +142,11 @@ class PeriodSchoolYearResource extends Resource
             ->label('Tipo');
     }
 
+    private static function hasRelationships($record): bool
+    {
+        return $record->bimesters->count() > 0 || $record->semesters->count() > 0 || $record->diaries->count() > 0;
+    }
+
     public static function table(Table $table): Table
     {
         return $table
@@ -156,17 +155,21 @@ class PeriodSchoolYearResource extends Resource
                     ->where('school_year_id', request()->cookie('SHYID'))
             )
             ->columns([
-                Tables\Columns\TextColumn::make('active'),
+                Tables\Columns\TextColumn::make('id')
+                    ->label(__('code'))
+                    ->sortable()
+                    ->searchable(),
+                SchoolResource::makeActiveTableColumn(),
                 Tables\Columns\TextColumn::make('schoolYear.school_year')
                     ->sortable(),
                 Tables\Columns\TextColumn::make('type')
                     ->sortable(),
                 Tables\Columns\TextColumn::make('created_at')
-                    ->dateTime()
+                    ->dateTime('d/m/Y')
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('updated_at')
-                    ->dateTime()
+                    ->dateTime('d/m/Y H:i')
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
@@ -174,34 +177,52 @@ class PeriodSchoolYearResource extends Resource
                 //
             ])
             ->actions([
-                Tables\Actions\EditAction::make(),
+                Action::make('toggle-active')
+                    ->label(
+                        fn ($record) => $record->active == 'Ativa' ? 'Fechar' : 'Abrir'
+                    )
+                    ->icon(
+                        fn ($record) => $record->active == 'Ativa' ? 'heroicon-o-x-circle' : 'heroicon-o-check-circle'
+                    )
+                    ->color(
+                        fn ($record) => $record->active == 'Ativa' ? 'danger' : 'success'
+                    )
+                    ->action(function (array $data, $record) {
+                        $record->update([
+                            'active' => $record->active == 'Ativa' ? 'Inativa' : 'Ativa',
+                        ]);
+                    }),
                 Tables\Actions\DeleteAction::make()
-                ->action(
-                    function ($data, $record) {
-                        if ($record->bimesters->count() > 0 || $record->semesters->count()) {
-                            Notification::make()
-                                ->danger()
-                                ->title(__('Não é possível excluir'))
-                                ->body(__('Existem vinculos cadastrados'))
-                                ->send();
-
-                            return;
+                    ->visible(
+                        function ($record) {
+                            return $record->active == 'Inativa' && !self::hasRelationships($record);
                         }
+                    )
+                    ->action( 
+                        function ($data, $record) {
+                            if (self::hasRelationships($record)) {
+                                Notification::make()
+                                    ->danger()
+                                    ->title(__('Não é possível excluir'))
+                                    ->body(__('Existem vínculos cadastrados'))
+                                    ->send();
 
-                        $record->delete();
+                                return;
+                            }
 
-                        Notification::make()
-                            ->success()
-                            ->title(__('Período excluído'))
-                            ->send();
-                    }
-                ),
-            ])
-            ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
-                ]),
-            ]);
+                            $record->delete();
+
+                            Notification::make()
+                                ->success()
+                                ->title(__('Período excluído'))
+                                ->send();
+                            
+                            Redirect::back();
+                        }
+                    ),
+
+            ], position: ActionsPosition::BeforeColumns)
+            ->bulkActions([]);
     }
 
     public static function getPages(): array
