@@ -207,5 +207,7 @@
     "Create School Period": "Novo Período Escolar",
     "Create Bi-monthly": "Novo Bimestre",
     "Create Semester": "Novo Semestre",
-    "School Period" : "Período Escolar"
+    "School Period" : "Período Escolar",
+    "The selected school year is not a semester type": "O ano letivo selecionado não é do tipo semestre",
+    "The selected school year is inactive": "O ano letivo selecionado está inativo"
 }
