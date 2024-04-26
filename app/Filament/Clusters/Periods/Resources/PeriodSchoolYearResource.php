@@ -169,6 +169,11 @@ class PeriodSchoolYearResource extends Resource
                 $record->update([
                     'active' => $record->active == 'Ativa' ? 'Inativa' : 'Ativa',
                 ]);
+
+                Notification::make()
+                    ->success()
+                    ->title(__('Period updated successfully'))
+                    ->send();
             });
     }
 
@@ -212,8 +217,8 @@ class PeriodSchoolYearResource extends Resource
                             if (self::hasRelationships($record)) {
                                 Notification::make()
                                     ->danger()
-                                    ->title(__('Não é possível excluir'))
-                                    ->body(__('Existem vínculos cadastrados'))
+                                    ->title(__('Delete not possible'))
+                                    ->body(__('There are registered bonds'))
                                     ->send();
 
                                 return;
@@ -222,13 +227,11 @@ class PeriodSchoolYearResource extends Resource
 
                                 Notification::make()
                                     ->success()
-                                    ->title(__('Período excluído'))
+                                    ->title(__('Period deleted successfully'))
                                     ->send();
-    
+
                                 return Redirect::to('/admin/periods/period-school-years');
                             }
-
-                           
                         }
                     ),
 

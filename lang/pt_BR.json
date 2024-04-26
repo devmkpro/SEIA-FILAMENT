@@ -203,6 +203,8 @@
     "School Diary created successfully": "Diário de Turma criado com sucesso",
     "School Diary deleted successfully": "Diário de Turma deletado com sucesso",
     "Bi-monthly created successfully": "Bimestre criado com sucesso",
+    "Bi-monthly updated successfully": "Bimestre atualizado com sucesso",
+    "Bi-monthly deleted successfully": "Bimestre deletado com sucesso",
     "Semester created successfully": "Semestre criado com sucesso",
     "Create School Period": "Novo Período Escolar",
     "Create Bi-monthly": "Novo Bimestre",
@@ -227,5 +229,10 @@
     "Type the start time" : "Digite a hora de início",
     "Type the end time" : "Digite a hora de término",
     "Type the default time class" : "Digite o tempo padrão de aula",
-    "Hours" : "Horas"
+    "Hours" : "Horas",
+    "School Diary updated successfully" : "Diário de Turma atualizado com sucesso",
+    "Period updated successfully" : "Período atualizado com sucesso",
+    "Delete not possible" : "Exclusão não permitida",
+    "There are registered bonds" : "Existem vínculos registrados",
+    "Period deleted successfully" : "Período excluído com sucesso"
 }

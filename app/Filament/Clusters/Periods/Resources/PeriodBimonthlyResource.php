@@ -6,15 +6,12 @@ use App\Filament\Clusters\Periods;
 use App\Filament\Clusters\Periods\Resources\PeriodBimonthlyResource\Pages;
 use App\Filament\Clusters\Periods\Resources\utils\SchoolPermissionAccess;
 use App\Filament\Resources\SchoolResource;
-use App\Http\Middleware\CheckSchoolCookieForPages;
-use App\Http\Middleware\RequireSchoolCookie;
 use App\Models\PeriodBimonthly;
 use App\Models\PeriodSchoolYear;
-use App\Models\School;
-use App\Models\SchoolYear;
 use Filament\Forms;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Form;
+use Filament\Notifications\Notification;
 use Filament\Pages\SubNavigationPosition;
 use Filament\Resources\Resource;
 use Filament\Tables;
@@ -29,7 +26,6 @@ class PeriodBimonthlyResource extends Resource
     protected static ?string $model = PeriodBimonthly::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-calendar-days';
-
 
     protected static ?string $cluster = Periods::class;
 
@@ -70,7 +66,10 @@ class PeriodBimonthlyResource extends Resource
         return true;
     }
 
-    //hasRelationships
+    private static function hasRelationships($record): bool
+    {
+        return false;
+    }
 
     private static function getBimesterOptions($periodSchoolYear)
     {
@@ -183,12 +182,36 @@ class PeriodBimonthlyResource extends Resource
             ->actions([
                 Tables\Actions\EditAction::make(),
                 Tables\Actions\DeleteAction::make()
+                    ->visible(
+                        function ($record) {
+                            return $record->active == 'Inativa' && !self::hasRelationships($record);
+                        }
+                    )
                     ->action(
                         function ($record) {
-                            $record->bimesterDiary->schoolDiary->delete();
-                            $record->delete();
-                            return Redirect::to('/admin/periods/period-bimonthlies');
+                            if (self::hasRelationships($record)) {
+                                Notification::make()
+                                    ->danger()
+                                    ->title(__('Delete not possible'))
+                                    ->body(__('There are registered bonds'))
+                                    ->send();
+    
+                                return;
+                            } else {
+                                $record->bimesterDiary->schoolDiary->delete();
+                                $record->delete();
+
+                                Notification::make()
+                                    ->success()
+                                    ->title(__('Bi-monthly deleted successfully'))
+                                    ->send();
+
+                                return Redirect::to('/admin/periods/period-bimonthlies');
+                            }
+                          
                         }
+                       
+                      
                     ),
             ], position: ActionsPosition::BeforeColumns)
             ->bulkActions([

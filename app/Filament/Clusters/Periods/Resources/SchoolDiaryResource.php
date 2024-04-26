@@ -8,6 +8,7 @@ use App\Filament\Clusters\Periods\Resources\utils\SchoolPermissionAccess;
 use App\Filament\Resources\SchoolResource;
 use App\Models\PeriodSchoolYear;
 use App\Models\SchoolDiary;
+use Filament\Notifications\Notification;
 use Filament\Pages\SubNavigationPosition;
 use Filament\Resources\Resource;
 use Filament\Tables;
@@ -121,6 +122,11 @@ class SchoolDiaryResource extends Resource
                 $record->update([
                     'active' => $record->active == 'Ativa' ? 'Inativa' : 'Ativa',
                 ]);
+
+                Notification::make()
+                    ->success()
+                    ->title(__('School Diary updated successfully'))
+                    ->send();
             });
     }
 

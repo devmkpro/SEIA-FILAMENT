@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('school_diaries', function (Blueprint $table) {
             $table->id();
-            $table->enum('active', ['Ativa', 'Inativa'])->default('Ativa');
+            $table->enum('active', ['Ativa', 'Inativa'])->default('Inativa');
             $table->foreignId('school_id')->constrained();
             $table->timestamps();
         });
