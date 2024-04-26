@@ -25,7 +25,7 @@ class SchoolResource extends Resource
 
     public static function getModelLabel(): string
     {
-        return __('Escola');
+        return __('School');
     }
 
     protected static ?string $navigationIcon = 'heroicon-o-academic-cap';

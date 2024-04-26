@@ -91,6 +91,14 @@ class RolesAndPermissionsSeeder extends Seeder
             'delete Period',
             'restore Period',
             'force-delete Period',
+
+            'view-any Curriculum',
+            'view Curriculum',
+            'create Curriculum',
+            'update Curriculum',
+            'delete Curriculum',
+            'restore Curriculum',
+            'force-delete Curriculum',
         ];
 
         foreach ($array as $permission) {
@@ -103,13 +111,20 @@ class RolesAndPermissionsSeeder extends Seeder
         $secretary->revokePermissionTo(Permission::all());
         $secretary->givePermissionTo([
             'select-my School',
-            'view-any Period',
+          
             'view Period',
             'create Period',
             'update Period',
             'delete Period',
             'restore Period',
             'force-delete Period',
+
+            'view Curriculum',
+            'create Curriculum',
+            'update Curriculum',
+            'delete Curriculum',
+            'restore Curriculum',
+            'force-delete Curriculum',
         ]);
     }
 }
