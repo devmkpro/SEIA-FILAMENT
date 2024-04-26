@@ -8,16 +8,12 @@ use App\Filament\Clusters\Periods\Resources\utils\SchoolPermissionAccess;
 use App\Filament\Resources\SchoolResource;
 use App\Models\PeriodSchoolYear;
 use App\Models\SchoolDiary;
-use Filament\Forms\Components\Select;
-use Filament\Forms\Form;
-use Filament\Notifications\Notification;
 use Filament\Pages\SubNavigationPosition;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Filament\Tables\Actions\Action;
 use Filament\Tables\Enums\ActionsPosition;
-use Illuminate\Support\Facades\Redirect;
 
 class SchoolDiaryResource extends Resource
 {
@@ -77,7 +73,7 @@ class SchoolDiaryResource extends Resource
                     ->formatStateUsing(
                         fn ($record) => $record->bimester->pluck('bimester')->implode(', ')
                     )
-                    ->label('Período')
+                    ->label(__('School Period'))
                     ->visible(
                         fn () => PeriodSchoolYear::where('school_id', self::getSchoolId())->where('school_year_id', self::getSchoolYearId())->first()->type == 'Bimestral'
                     )
@@ -87,7 +83,7 @@ class SchoolDiaryResource extends Resource
                     ->formatStateUsing(
                         fn ($record) => $record->semester->pluck('semester')->implode(', ')
                     )
-                    ->label('Período')
+                    ->label('School Period')
                     ->visible(
                         fn () => PeriodSchoolYear::where('school_id', self::getSchoolId())->where('school_year_id', self::getSchoolYearId())->first()->type == 'Semestral'
                     )

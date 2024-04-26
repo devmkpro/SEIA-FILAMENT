@@ -17,6 +17,7 @@ class ManagePeriodBimonthlies extends ManageRecords
     {
         return [
             Actions\CreateAction::make()
+            ->label(__('Create Bi-monthly'))
             ->action(
                 function ($data) {
                     DB::transaction(

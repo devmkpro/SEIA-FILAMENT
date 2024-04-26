@@ -17,6 +17,7 @@ class ManagePeriodSemesters extends ManageRecords
     {
         return [
             Actions\CreateAction::make()
+            ->label(__('Create Semester'))
             ->action(
                 function ($data) {
                     DB::transaction(

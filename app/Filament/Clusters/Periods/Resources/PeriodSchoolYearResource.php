@@ -225,7 +225,7 @@ class PeriodSchoolYearResource extends Resource
                                     ->title(__('Período excluído'))
                                     ->send();
     
-                                Redirect::back();
+                                return Redirect::to('/admin/periods/period-school-years');
                             }
 
                            

@@ -203,5 +203,9 @@
     "School Diary created successfully": "Diário de Turma criado com sucesso",
     "School Diary deleted successfully": "Diário de Turma deletado com sucesso",
     "Bi-monthly created successfully": "Bimestre criado com sucesso",
-    "Semester created successfully": "Semestre criado com sucesso"
+    "Semester created successfully": "Semestre criado com sucesso",
+    "Create School Period": "Novo Período Escolar",
+    "Create Bi-monthly": "Novo Bimestre",
+    "Create Semester": "Novo Semestre",
+    "School Period" : "Período Escolar"
 }

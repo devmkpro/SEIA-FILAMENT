@@ -22,6 +22,7 @@ use Filament\Tables\Enums\ActionsPosition;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Illuminate\Support\Facades\Redirect;
 
 class PeriodBimonthlyResource extends Resource
 {
@@ -59,8 +60,8 @@ class PeriodBimonthlyResource extends Resource
         }
 
         $periodSchoolYear = PeriodSchoolYear::where('type', 'Bimestral')->where('school_year_id', self::getSchoolYearId())
-        ->where('school_id',self::getSchoolId())
-        ->first();
+            ->where('school_id', self::getSchoolId())
+            ->first();
 
         if (!$periodSchoolYear) {
             return false;
@@ -123,12 +124,6 @@ class PeriodBimonthlyResource extends Resource
                     ->disabled(fn ($operation) => $operation === 'edit')
                     ->required(),
 
-                Forms\Components\DatePicker::make('start_date')
-                    ->required(),
-                Forms\Components\DatePicker::make('end_date')
-                    ->after('start_date')
-                    ->required(),
-
                 Select::make('bimester')
                     ->options(
                         function (callable $get) {
@@ -138,6 +133,12 @@ class PeriodBimonthlyResource extends Resource
                     )
                     ->native(false)
                     ->disabled(fn ($operation) => $operation === 'edit')
+                    ->required(),
+
+                Forms\Components\DatePicker::make('start_date')
+                    ->required(),
+                Forms\Components\DatePicker::make('end_date')
+                    ->after('start_date')
                     ->required(),
             ]);
     }
@@ -182,12 +183,13 @@ class PeriodBimonthlyResource extends Resource
             ->actions([
                 Tables\Actions\EditAction::make(),
                 Tables\Actions\DeleteAction::make()
-                ->action(
-                    function ($record) {
-                        $record->bimesterDiary->schoolDiary->delete();
-                        $record->delete();
-                    }
-                ),
+                    ->action(
+                        function ($record) {
+                            $record->bimesterDiary->schoolDiary->delete();
+                            $record->delete();
+                            return Redirect::to('/admin/periods/period-bimonthlies');
+                        }
+                    ),
             ], position: ActionsPosition::BeforeColumns)
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([

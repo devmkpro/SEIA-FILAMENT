@@ -16,6 +16,7 @@ use App\Models\PeriodSchoolYear;
 use App\Filament\Resources\SchoolResource;
 use Filament\Forms\Components\Select;
 use Filament\Tables\Enums\ActionsPosition;
+use Illuminate\Support\Facades\Redirect;
 
 class PeriodSemesterResource extends Resource
 {
@@ -109,11 +110,6 @@ class PeriodSemesterResource extends Resource
                     ->disabled(fn ($operation) => $operation === 'edit')
                     ->required(),
 
-                Forms\Components\DatePicker::make('start_date')
-                    ->required(),
-                Forms\Components\DatePicker::make('end_date')
-                    ->after('start_date')
-                    ->required(),
 
                 Select::make('semester')
                     ->options(
@@ -124,6 +120,12 @@ class PeriodSemesterResource extends Resource
                     )
                     ->native(false)
                     ->disabled(fn ($operation) => $operation === 'edit')
+                    ->required(),
+
+                Forms\Components\DatePicker::make('start_date')
+                    ->required(),
+                Forms\Components\DatePicker::make('end_date')
+                    ->after('start_date')
                     ->required(),
             ]);
     }
@@ -163,12 +165,13 @@ class PeriodSemesterResource extends Resource
             ->actions([
                 Tables\Actions\EditAction::make(),
                 Tables\Actions\DeleteAction::make()
-                ->action(
-                    function ($record) {
-                        $record->semesterDiary->schoolDiary->delete();
-                        $record->delete();
-                    }
-                ),
+                    ->action(
+                        function ($record) {
+                            $record->semesterDiary->schoolDiary->delete();
+                            $record->delete();
+                            return Redirect::to('/admin/periods/period-semesters');
+                        }
+                    ),
             ], position: ActionsPosition::BeforeColumns)
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
