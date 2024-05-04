@@ -38,6 +38,15 @@ class CurriculumResource extends Resource
         return __('Curriculum');
     }
 
+    public static function makeCurriculumSelect(): Select
+    {
+        return Select::make('curriculum_id')
+            ->options(fn () => Curriculum::where('school_id', self::getSchoolId())->pluck('series', 'id')->toArray())
+            ->required()
+            ->searchable()
+            ->placeholder(__('Select a curriculum'));
+    }
+
     public static function canAccess(): bool
     {
         $isValid = (new RequireSchoolCookie())->handle(request(), function ($request) {
@@ -117,9 +126,10 @@ class CurriculumResource extends Resource
                     ->searchable()
                     ->placeholder(__('Select a modality')),
 
-                Forms\Components\TextInput::make('default_time_class')
+
+                    Forms\Components\TextInput::make('default_time_class')
                     ->required()
-                    ->placeholder(__('Type the default time class'))
+                    ->placeholder(__('Type the default time class (hours)'))
                     ->numeric(),
             ]);
     }

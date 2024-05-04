@@ -5,6 +5,7 @@ namespace App\Filament\Resources\CurriculumResource\Pages;
 use App\Filament\Resources\CurriculumResource;
 use Filament\Actions;
 use Filament\Resources\Pages\ManageRecords;
+use Illuminate\Support\Facades\Redirect;
 
 class ManageCurricula extends ManageRecords
 {
@@ -15,6 +16,9 @@ class ManageCurricula extends ManageRecords
         return [
             Actions\CreateAction::make()
             ->label(__('Create Curriculum'))
+            ->after(function () {
+                return Redirect::to('/admin/curricula');
+            }),
         ];
     }
 }

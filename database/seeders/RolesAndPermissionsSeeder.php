@@ -2,7 +2,6 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
@@ -16,7 +15,8 @@ class RolesAndPermissionsSeeder extends Seeder
     {
         $admin = Role::createOrFirst(['name' => 'admin', 'guard_name' => 'web']);
         $secretary = Role::createOrFirst(['name' => 'secretary', 'guard_name' => 'web']);
-
+        $teacher = Role::createOrFirst(['name' => 'teacher', 'guard_name' => 'web']);
+        
         $array = [
             'view-any User',
             'view User',
@@ -83,7 +83,6 @@ class RolesAndPermissionsSeeder extends Seeder
 
             'select-my School',
 
-
             'view-any Period',
             'view Period',
             'create Period',
@@ -99,6 +98,14 @@ class RolesAndPermissionsSeeder extends Seeder
             'delete Curriculum',
             'restore Curriculum',
             'force-delete Curriculum',
+
+            'view-any Classes',
+            'view Classes',
+            'create Classes',
+            'update Classes',
+            'delete Classes',
+            'restore Classes',
+            'force-delete Classes',
         ];
 
         foreach ($array as $permission) {
@@ -125,6 +132,14 @@ class RolesAndPermissionsSeeder extends Seeder
             'delete Curriculum',
             'restore Curriculum',
             'force-delete Curriculum',
+
+            'view-any Classes',
+            'view Classes',
+            'create Classes',
+            'update Classes',
+            'delete Classes',
+            'restore Classes',
+            'force-delete Classes',
         ]);
     }
 }

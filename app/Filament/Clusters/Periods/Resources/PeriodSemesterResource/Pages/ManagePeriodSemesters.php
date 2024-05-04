@@ -9,6 +9,7 @@ use Filament\Actions;
 use Filament\Notifications\Notification;
 use Filament\Resources\Pages\ManageRecords;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Redirect;
 
 class ManagePeriodSemesters extends ManageRecords
 {
@@ -45,7 +46,9 @@ class ManagePeriodSemesters extends ManageRecords
                             self::sendSuccessNotification();
                         }
                     });
-                })
+                })->after(function () {
+                    return Redirect::to('/admin/periods/period-semesters');
+                }),
         ];
 
        

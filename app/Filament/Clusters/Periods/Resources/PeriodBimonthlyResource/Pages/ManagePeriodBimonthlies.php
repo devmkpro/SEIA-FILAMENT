@@ -9,6 +9,7 @@ use Filament\Actions;
 use Filament\Notifications\Notification;
 use Filament\Resources\Pages\ManageRecords;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Redirect;
 
 class ManagePeriodBimonthlies extends ManageRecords
 {
@@ -51,7 +52,9 @@ class ManagePeriodBimonthlies extends ManageRecords
                             }
                         );
                     }
-                )
+                )->after(function () {
+                    return Redirect::to('/admin/periods/period-bimonthlies');
+                }),
         ];
     }
 

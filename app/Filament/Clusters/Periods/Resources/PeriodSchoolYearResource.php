@@ -36,6 +36,16 @@ class PeriodSchoolYearResource extends Resource
         return __('Period');
     }
 
+    public static function getSchoolId(): int
+    {
+        return SchoolResource::getSchoolId();
+    }
+
+    public static function getSchoolYearId(): int
+    {
+        return SchoolResource::getSchoolYearId();
+    }
+
     public static function canAccess(): bool
     {
         $isValid = (new SchoolPermissionAccess())->canAccess();
@@ -56,9 +66,24 @@ class PeriodSchoolYearResource extends Resource
             ->schema([
                 self::makeActiveSelect(),
                 self::makeSchoolYearSelect(),
-                self::makeSchoolSelect(),
+                SchoolResource::makeSchoolSelect(),
                 self::makeTypeSelect(),
             ]);
+    }
+
+    public static function makePeriodSchoolYearSelect(): Select
+    {
+        return Select::make('period_school_years_id')
+            ->options(
+                PeriodSchoolYear::where('active', 'Ativa')
+                    ->where('school_id', self::getSchoolId())
+                    ->get()
+                    ->pluck('type', 'id')
+            )
+            ->label('Período')
+            ->default(PeriodSchoolYear::where('active', 'Ativa')->first()->id)
+            ->disabled(fn ($operation) => $operation === 'edit')
+            ->required();
     }
 
     private static function makeActiveSelect(): Select
@@ -117,17 +142,6 @@ class PeriodSchoolYearResource extends Resource
             ->required();
     }
 
-    private static function makeSchoolSelect(): Select
-    {
-        return Select::make('school_id')
-            ->options(
-                School::where('code', request()->cookie('SHID'))->get()->pluck('name', 'id')
-            )
-            ->label('Escola')
-            ->default(School::where('code', request()->cookie('SHID'))->first()->id)
-            ->disabled(fn ($operation) => $operation === 'edit')
-            ->required();
-    }
 
     private static function makeTypeSelect(): Select
     {

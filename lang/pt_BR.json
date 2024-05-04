@@ -228,11 +228,21 @@
     "Type the total hours" : "Digite o total de horas",
     "Type the start time" : "Digite a hora de início",
     "Type the end time" : "Digite a hora de término",
-    "Type the default time class" : "Digite o tempo padrão de aula",
+    "Type the default time class (hours)" : "Digite o tempo padrão de aula (horas)",
     "Hours" : "Horas",
     "School Diary updated successfully" : "Diário de Turma atualizado com sucesso",
     "Period updated successfully" : "Período atualizado com sucesso",
     "Delete not possible" : "Exclusão não permitida",
     "There are registered bonds" : "Existem vínculos registrados",
-    "Period deleted successfully" : "Período excluído com sucesso"
+    "Period deleted successfully" : "Período excluído com sucesso",
+    "Classes" : "Turmas",
+    "Create Class" : "Nova Turma",
+    "Curriculum id" : "Matriz Curricular",
+    "Select a curriculum" : "Selecione uma matriz curricular",
+    "Turn" : "Turno",
+    "Max students" : "Máximo de alunos",
+    "Name of the class" : "Nome da turma",
+    "Teacher responsible id" : "Professor Responsável",
+    "Teacher responsible" : "Professor Responsável",
+    "Curricula": "Matriz Curricular"
 }

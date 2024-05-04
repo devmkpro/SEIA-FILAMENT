@@ -15,14 +15,14 @@ class UserSeeder extends Seeder
     public function run(): void
     {
         $admin = User::factory()->create([
-            'name' => 'Admin Role',
+            'name' => 'Maike (Admin)',
             'email' => 'test@example.com',
         ]);
 
         $admin->assignRole('admin');
 
         $secretaria = User::factory()->create([
-            'name' => 'Secretaria Role',
+            'name' => 'José (Secretaria)',
             'email' => 'secretaria@secretaria.com',
         ]);
 
@@ -31,6 +31,17 @@ class UserSeeder extends Seeder
             'user_id' => $secretaria->id,
             'school_id' => 1,
             'role_id' => Role::where('name', 'secretary')->first()->id,
+        ]);
+
+        $professor = User::factory()->create([
+            'name' => 'Fernando (Professor)',
+            'email' => 'professor@professor.com',
+        ]);
+        $professor->assignRole('teacher');
+        UserSchool::create([
+            'user_id' => $professor->id,
+            'school_id' => 1,
+            'role_id' => Role::where('name', 'teacher')->first()->id,
         ]);
     }
 }

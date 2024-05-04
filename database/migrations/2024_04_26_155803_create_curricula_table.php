@@ -24,8 +24,8 @@ return new class extends Migration
                     'tecnico',
                     'other',
                 );
-            $table->integer('weekly_hours');
-            $table->integer('total_hours');
+            $table->double('weekly_hours');
+            $table->double('total_hours');
             $table->time('start_time');
             $table->time('end_time');
             $table->string('modality')
@@ -40,7 +40,7 @@ return new class extends Migration
                     'tecnico',
                     'other'
                 );
-            $table->integer('default_time_class');
+            $table->double('default_time_class');
             $table->timestamps();
         });
     }

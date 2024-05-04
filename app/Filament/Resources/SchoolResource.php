@@ -14,10 +14,7 @@ use App\Models\City;
 use App\Models\State;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Select;
-use Filament\Notifications\Notification;
 use Filament\Tables\Enums\ActionsPosition;
-use Illuminate\Support\Facades\Cookie;
-use Filament\Tables\Actions\Action;
 
 class SchoolResource extends Resource
 {
@@ -125,11 +122,11 @@ class SchoolResource extends Resource
     public static function makeActiveTableColumn()
     {
         return Tables\Columns\TextColumn::make('active')
-        ->label('Status')
-        ->searchable()
-        ->sortable()
-        ->badge(fn ($record) => $record->active ? 'success' : 'danger')
-        ->color(fn ($record) => $record->active === 'Ativa' ? 'success' : 'danger');
+            ->label('Status')
+            ->searchable()
+            ->sortable()
+            ->badge(fn ($record) => $record->active ? 'success' : 'danger')
+            ->color(fn ($record) => $record->active === 'Ativa' ? 'success' : 'danger');
     }
 
     public static function form(Form $form): Form
@@ -192,7 +189,7 @@ class SchoolResource extends Resource
                     Tables\Columns\TextColumn::make('code')
                         ->sortable()
                         ->searchable(),
-                        
+
                     self::makeActiveTableColumn(),
 
                     Tables\Columns\TextColumn::make('name')
@@ -240,5 +237,18 @@ class SchoolResource extends Resource
             'create' => Pages\CreateSchool::route('/create'),
             'edit' => Pages\EditSchool::route('/{record}/edit'),
         ];
+    }
+
+    // Acesso por outros recursos
+    public static function makeSchoolSelect(): Select
+    {
+        return Select::make('school_id')
+            ->options(
+                School::where('code', request()->cookie('SHID'))->get()->pluck('name', 'id')
+            )
+            ->label('Escola')
+            ->default(School::where('code', request()->cookie('SHID'))->first()->id)
+            ->disabled(fn ($operation) => $operation === 'edit')
+            ->required();
     }
 }

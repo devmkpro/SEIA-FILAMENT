@@ -2,12 +2,13 @@
 
 namespace App\Models;
 
+use App\HasCodeTrait;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class School extends Model
 {
-    use HasFactory;
+    use HasFactory, HasCodeTrait;
 
     protected $fillable = [
         'code',
@@ -30,15 +31,6 @@ class School extends Model
     public function city()
     {
         return $this->belongsTo(City::class, 'city_id');
-    }
-
-    protected static function boot()
-    {
-        parent::boot();
-
-        static::creating(function ($school) {
-            $school->code = $school->generateCode();
-        });
     }
 
     /**
